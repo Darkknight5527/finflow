@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinFlow — Personal Finance Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">₹</span>
+      <span class="logo-text">FinFlow</span>
+    </div>
+    <nav class="nav">
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">◈</span> Dashboard
+      </a>
+      <a href="#" class="nav-item" data-page="budget">
+        <span class="nav-icon">◉</span> Budget Plan
+      </a>
+      <a href="#" class="nav-item" data-page="investments">
+        <span class="nav-icon">◈</span> Investments
+      </a>
+      <a href="#" class="nav-item" data-page="expenses">
+        <span class="nav-icon">◎</span> Monthly Expenses
+      </a>
+      <a href="#" class="nav-item" data-page="goals">
+        <span class="nav-icon">◉</span> Goals
+      </a>
+    </nav>
+    <div class="sidebar-phase">
+      <div class="phase-label">Current Phase</div>
+      <div class="phase-toggle">
+        <button class="phase-btn active" id="phaseIntern">Internship</button>
+        <button class="phase-btn" id="phaseJob">Post-Absorption</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- DASHBOARD PAGE -->
+    <section class="page active" id="page-dashboard">
+      <header class="page-header">
+        <div>
+          <div class="eyebrow">Overview</div>
+          <h1>Dashboard</h1>
+        </div>
+        <div class="header-month">
+          <select id="dashMonth" class="month-select"></select>
+        </div>
+      </header>
+
+      <div class="kpi-row" id="kpiRow"></div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Monthly Cashflow</span>
+            <span class="card-badge">This Month</span>
+          </div>
+          <div class="cashflow-bars" id="cashflowBars"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Spend Breakdown</span>
+          </div>
+          <div class="donut-wrap">
+            <svg id="donutChart" viewBox="0 0 200 200" width="180" height="180"></svg>
+            <div class="donut-legend" id="donutLegend"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card full-width">
+        <div class="card-header">
+          <span class="card-title">Investment Growth Projection</span>
+          <span class="card-badge">11% p.a.</span>
+        </div>
+        <div class="projection-chart" id="projectionChart"></div>
+      </div>
+    </section>
+
+    <!-- BUDGET PAGE -->
+    <section class="page" id="page-budget">
+      <header class="page-header">
+        <div>
+          <div class="eyebrow">Planning</div>
+          <h1>Budget Plan</h1>
+        </div>
+      </header>
+
+      <div class="phase-cards" id="budgetPhaseCards"></div>
+
+      <div class="card full-width" style="margin-top:1.5rem">
+        <div class="card-header">
+          <span class="card-title">Allocation Editor</span>
+          <span class="card-badge">Drag to adjust</span>
+        </div>
+        <div class="alloc-editor" id="allocEditor"></div>
+      </div>
+    </section>
+
+    <!-- INVESTMENTS PAGE -->
+    <section class="page" id="page-investments">
+      <header class="page-header">
+        <div>
+          <div class="eyebrow">Portfolio</div>
+          <h1>Investments</h1>
+        </div>
+        <button class="btn-primary" id="addInvestmentBtn">+ Add</button>
+      </header>
+
+      <div class="kpi-row" id="investKpiRow"></div>
+
+      <div class="card full-width">
+        <div class="card-header">
+          <span class="card-title">Holdings</span>
+        </div>
+        <table class="data-table" id="investTable">
+          <thead>
+            <tr>
+              <th>Name</th><th>Type</th><th>Monthly SIP/Buy</th><th>Units/Value</th><th>Returns</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="investBody"></tbody>
+        </table>
+      </div>
+
+      <div class="card full-width" style="margin-top:1.5rem">
+        <div class="card-header">
+          <span class="card-title">EPF Auto-Tracker</span>
+          <span class="card-badge">Company Benefit</span>
+        </div>
+        <div class="epf-info" id="epfInfo"></div>
+      </div>
+    </section>
+
+    <!-- EXPENSES PAGE -->
+    <section class="page" id="page-expenses">
+      <header class="page-header">
+        <div>
+          <div class="eyebrow">Tracking</div>
+          <h1>Monthly Expenses</h1>
+        </div>
+        <div style="display:flex;gap:0.75rem;align-items:center">
+          <select id="expMonth" class="month-select"></select>
+          <button class="btn-primary" id="addExpenseBtn">+ Add Expense</button>
+        </div>
+      </header>
+
+      <div class="kpi-row" id="expKpiRow"></div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Fixed Expenses</span></div>
+          <div class="fixed-list" id="fixedList"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Variable Expenses</span></div>
+          <div class="var-list" id="varList"></div>
+        </div>
+      </div>
+
+      <div class="card full-width" style="margin-top:1.5rem">
+        <div class="card-header">
+          <span class="card-title">All Transactions</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th>Action</th></tr>
+          </thead>
+          <tbody id="expBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- GOALS PAGE -->
+    <section class="page" id="page-goals">
+      <header class="page-header">
+        <div>
+          <div class="eyebrow">Planning</div>
+          <h1>Financial Goals</h1>
+        </div>
+        <button class="btn-primary" id="addGoalBtn">+ Add Goal</button>
+      </header>
+      <div class="goals-grid" id="goalsGrid"></div>
+    </section>
+
+  </main>
+
+  <!-- MODALS -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <span id="modalTitle">Add Item</span>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="modalCancel">Cancel</button>
+        <button class="btn-primary" id="modalSave">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
