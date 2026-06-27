@@ -291,13 +291,10 @@ h1{font-size:1.75rem;font-weight:700;letter-spacing:-0.03em;}
   <nav class="nav">
     <div class="nav-section">Overview</div>
     <button class="nav-item active" data-page="dashboard"><span class="nav-icon">◈</span><span>Dashboard</span></button>
-    <button class="nav-item" data-page="daily"><span class="nav-icon">☀</span><span>Daily Sheet</span></button>
 
     <div class="nav-section">Monthly</div>
     <button class="nav-item" data-page="monthglance"><span class="nav-icon">📅</span><span>Month at a Glance</span></button>
-    <button class="nav-item" data-page="monthplan"><span class="nav-icon">🎯</span><span>Month Planner</span></button>
     <button class="nav-item" data-page="habits"><span class="nav-icon">✓</span><span>Habit Tracker</span></button>
-    <button class="nav-item" data-page="mood"><span class="nav-icon">◉</span><span>Mood Tracker</span></button>
 
     <div class="nav-section">Wellness</div>
     <button class="nav-item" data-page="skincare"><span class="nav-icon">✦</span><span>Skincare</span></button>
@@ -347,101 +344,6 @@ h1{font-size:1.75rem;font-weight:700;letter-spacing:-0.03em;}
   </div>
 </section>
 
-<!-- DAILY SHEET -->
-<section class="page" id="page-daily">
-  <div class="page-header">
-    <div><div class="eyebrow">Daily</div><h1>Daily Sheet</h1></div>
-    <div style="display:flex;gap:0.5rem;align-items:center;">
-      <input type="date" id="dailyDate" class="month-select"/>
-      <button class="btn-primary" onclick="saveDaily()">Save day</button>
-    </div>
-  </div>
-  <div class="daily-sheet">
-    <!-- Affirmation -->
-    <div class="card full" style="margin-bottom:1rem;">
-      <div class="card-header"><span class="card-title">Daily affirmation</span></div>
-      <input type="text" class="form-input" id="ds-affirmation" placeholder="I am capable, consistent, and growing every day..."/>
-    </div>
-
-    <!-- Priorities -->
-    <div class="ds-priorities" style="margin-bottom:1rem;">
-      <div class="card">
-        <div class="ds-priority-title work">Work priorities</div>
-        <div id="work-priorities"></div>
-        <div style="margin-top:0.5rem;">
-          <input type="text" class="form-input" id="work-prio-input" placeholder="Add priority..." style="font-size:0.78rem;padding:0.35rem 0.6rem;"/>
-          <button class="btn-ghost" style="margin-top:0.35rem;width:100%;" onclick="addPriority('work')">+ Add</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="ds-priority-title family">Family priorities</div>
-        <div id="family-priorities"></div>
-        <div style="margin-top:0.5rem;">
-          <input type="text" class="form-input" id="family-prio-input" placeholder="Add priority..." style="font-size:0.78rem;padding:0.35rem 0.6rem;"/>
-          <button class="btn-ghost" style="margin-top:0.35rem;width:100%;" onclick="addPriority('family')">+ Add</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="ds-priority-title self">Self-care priorities</div>
-        <div id="self-priorities"></div>
-        <div style="margin-top:0.5rem;">
-          <input type="text" class="form-input" id="self-prio-input" placeholder="Add priority..." style="font-size:0.78rem;padding:0.35rem 0.6rem;"/>
-          <button class="btn-ghost" style="margin-top:0.35rem;width:100%;" onclick="addPriority('self')">+ Add</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid2" style="margin-bottom:1rem;">
-      <!-- Grateful + Highlights -->
-      <div class="card">
-        <div class="card-header"><span class="card-title">I'm grateful for</span></div>
-        <textarea class="form-textarea" id="ds-grateful" placeholder="Three things you're grateful for today..."></textarea>
-      </div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">Highlights of the day</span></div>
-        <textarea class="form-textarea" id="ds-highlights" placeholder="What made today memorable?"></textarea>
-      </div>
-    </div>
-
-    <div class="grid2" style="margin-bottom:1rem;">
-      <div class="card">
-        <div class="card-header"><span class="card-title">How could I have made today better?</span></div>
-        <textarea class="form-textarea" id="ds-better" placeholder="Reflect honestly..."></textarea>
-      </div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">Thoughts · Feelings · Doodles</span></div>
-        <textarea class="form-textarea" id="ds-thoughts" placeholder="Stream of consciousness..."></textarea>
-      </div>
-    </div>
-
-    <div class="grid2" style="margin-bottom:1rem;">
-      <div class="card">
-        <div class="card-header"><span class="card-title">Notes</span></div>
-        <textarea class="form-textarea" id="ds-notes" placeholder="Anything else..."></textarea>
-      </div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">Rate your day</span></div>
-        <div class="rating-row">
-          <span class="rating-label">Work</span>
-          <div class="rating-icons" id="rate-work"></div>
-        </div>
-        <div class="rating-row">
-          <span class="rating-label">Family</span>
-          <div class="rating-icons" id="rate-family"></div>
-        </div>
-        <div class="rating-row">
-          <span class="rating-label">Self-care</span>
-          <div class="rating-icons" id="rate-self"></div>
-        </div>
-        <div style="margin-top:1rem;">
-          <div class="form-label" style="margin-bottom:0.35rem;">Overall mood today</div>
-          <div style="display:flex;gap:0.5rem;" id="daily-mood-pick"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- MONTH AT A GLANCE -->
 <section class="page" id="page-monthglance">
   <div class="page-header">
@@ -465,55 +367,6 @@ h1{font-size:1.75rem;font-weight:700;letter-spacing:-0.03em;}
       <div class="card" style="flex:1;">
         <div class="card-header"><span class="card-title">Notes</span></div>
         <textarea class="form-textarea" id="cal-notes" placeholder="Important notes for this month..." style="min-height:120px;"></textarea>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- MONTH PLANNER -->
-<section class="page" id="page-monthplan">
-  <div class="page-header">
-    <div><div class="eyebrow">Monthly</div><h1>Month Planner</h1></div>
-    <select id="planMonth" class="month-select"></select>
-  </div>
-  <div class="card full" style="margin-bottom:1rem;">
-    <div class="card-header"><span class="card-title">This month's motto</span></div>
-    <input type="text" class="form-input" id="month-motto" placeholder="e.g. Discipline is freedom. Focus on V93K and health." style="font-family:var(--serif);font-style:italic;font-size:1rem;"/>
-  </div>
-  <div class="grid2">
-    <div class="card">
-      <div class="card-header"><span class="card-title">Goals for the month</span></div>
-      <div id="month-goals-list"></div>
-      <div class="quick-add" style="margin-top:0.75rem;">
-        <input type="text" class="form-input" id="month-goal-input" placeholder="Add a goal..."/>
-        <button class="btn-primary" onclick="addMonthGoal()">+</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header"><span class="card-title">To-do list</span></div>
-      <div id="month-todo-list"></div>
-      <div class="quick-add" style="margin-top:0.75rem;">
-        <input type="text" class="form-input" id="month-todo-input" placeholder="Add a task..."/>
-        <button class="btn-primary" onclick="addMonthTodo()">+</button>
-      </div>
-    </div>
-  </div>
-  <div class="grid2">
-    <div class="card">
-      <div class="card-header"><span class="card-title">Important dates & appointments</span></div>
-      <div id="month-dates-list"></div>
-      <div class="quick-add" style="margin-top:0.75rem;flex-direction:column;gap:0.4rem;">
-        <input type="text" class="form-input" id="month-date-label" placeholder="Label..."/>
-        <input type="date" class="form-input" id="month-date-val"/>
-        <button class="btn-primary" onclick="addMonthDate()">+ Add date</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header"><span class="card-title">Shopping list</span></div>
-      <div id="shopping-list"></div>
-      <div class="quick-add" style="margin-top:0.75rem;">
-        <input type="text" class="form-input" id="shop-input" placeholder="Add item..."/>
-        <button class="btn-primary" onclick="addShopItem()">+</button>
       </div>
     </div>
   </div>
@@ -558,30 +411,6 @@ h1{font-size:1.75rem;font-weight:700;letter-spacing:-0.03em;}
   <div class="card full" style="margin-top:1rem;">
     <div class="card-header"><span class="card-title">Monthly progress trend</span></div>
     <div id="habit-chart" style="height:120px;"></div>
-  </div>
-</section>
-
-<!-- MOOD TRACKER -->
-<section class="page" id="page-mood">
-  <div class="page-header">
-    <div><div class="eyebrow">Monthly</div><h1>Mood Tracker</h1></div>
-    <select id="moodMonth" class="month-select"></select>
-  </div>
-  <div class="card full" style="margin-bottom:1rem;">
-    <div class="card-header"><span class="card-title">Plot your mood — click a day</span></div>
-    <div style="display:flex;gap:0.75rem;margin-bottom:0.75rem;flex-wrap:wrap;" id="mood-legend"></div>
-    <div style="display:flex;gap:0.4rem;margin-bottom:0.5rem;">
-      <span style="font-size:0.7rem;color:var(--text3);writing-mode:initial;">1</span>
-    </div>
-    <div id="mood-day-labels" style="display:grid;grid-template-columns:repeat(31,1fr);gap:3px;margin-bottom:2px;"></div>
-    <div class="mood-grid" id="mood-grid"></div>
-    <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--text3);margin-top:0.25rem;">
-      <span>Worst</span><span>Bad</span><span>Okay</span><span>Good</span><span>Awesome</span>
-    </div>
-  </div>
-  <div class="card full">
-    <div class="card-header"><span class="card-title">Quote</span></div>
-    <div style="font-family:var(--serif);font-style:italic;color:var(--text2);font-size:0.95rem;">"If you can't measure it, you can't improve it." — Peter Drucker</div>
   </div>
 </section>
 
@@ -909,24 +738,20 @@ function currentPage() { return document.querySelector('.page.active')?.id?.repl
 
 function populateSelects() {
   const months = getMonths(12);
-  const ids = ['dashMonth','calMonth','planMonth','habitMonth','moodMonth','budgetMonth','expMonth'];
+  const ids = ['dashMonth','calMonth','habitMonth','budgetMonth'];
   ids.forEach(id => {
     const el = document.getElementById(id);
     if(!el) return;
     el.innerHTML = months.map(m=>`<option value="${m}"${m===ym()?'selected':''}>${monthLabel(m)}</option>`).join('');
   });
-  document.getElementById('dailyDate').value = today();
   document.getElementById('healthDate').value = today();
 }
 
 function renderPage(page) {
   switch(page) {
     case 'dashboard': renderDashboard(); break;
-    case 'daily': renderDaily(); break;
     case 'monthglance': renderMonthGlance(); break;
-    case 'monthplan': renderMonthPlan(); break;
     case 'habits': renderHabits(); break;
-    case 'mood': renderMood(); break;
     case 'skincare': renderSkincare(); break;
     case 'health': renderHealth(); break;
     case 'mealplan': renderMealPlan(); break;
@@ -1017,294 +842,6 @@ function quickToggleHabit(id, val) {
   renderDashboard();
 }
 
-// ═══════════════════════════════════════
-// DAILY SHEET
-// ═══════════════════════════════════════
-function renderDaily() {
-  const date = document.getElementById('dailyDate').value || today();
-  const sheet = S.dailySheets[date] || {};
-  document.getElementById('ds-affirmation').value = sheet.affirmation||'';
-  document.getElementById('ds-grateful').value = sheet.grateful||'';
-  document.getElementById('ds-highlights').value = sheet.highlights||'';
-  document.getElementById('ds-better').value = sheet.better||'';
-  document.getElementById('ds-thoughts').value = sheet.thoughts||'';
-  document.getElementById('ds-notes').value = sheet.notes||'';
-  renderPriorities('work', sheet.workPrios||[]);
-  renderPriorities('family', sheet.familyPrios||[]);
-  renderPriorities('self', sheet.selfPrios||[]);
-  renderRating('work', sheet.rateWork||0, '○', '#f0a05b');
-  renderRating('family', sheet.rateFamily||0, '♥', '#f05b9e');
-  renderRating('self', sheet.rateSelf||0, '★', '#5b6af0');
-  renderDailyMoodPick(sheet.mood||0);
-}
-
-function renderPriorities(type, prios) {
-  const container = document.getElementById(type+'-priorities');
-  container.innerHTML = prios.map((p,i)=>`
-    <div class="ds-priority-item">
-      <input type="checkbox" ${p.done?'checked':''} onchange="toggleDailyPrio('${type}',${i},this.checked)"/>
-      <span style="${p.done?'text-decoration:line-through;color:var(--text3)':''}">${p.text}</span>
-    </div>
-  `).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.25rem 0;">No priorities added</div>';
-}
-
-function addPriority(type) {
-  const input = document.getElementById(type+'-prio-input');
-  const text = input.value.trim();
-  if(!text) return;
-  const date = document.getElementById('dailyDate').value || today();
-  if(!S.dailySheets[date]) S.dailySheets[date] = {};
-  const key = type+'Prios';
-  if(!S.dailySheets[date][key]) S.dailySheets[date][key] = [];
-  S.dailySheets[date][key].push({text, done:false});
-  save(); input.value='';
-  renderPriorities(type, S.dailySheets[date][key]);
-}
-
-function toggleDailyPrio(type, idx, val) {
-  const date = document.getElementById('dailyDate').value || today();
-  if(!S.dailySheets[date]) S.dailySheets[date]={};
-  const key = type+'Prios';
-  if(S.dailySheets[date][key]) S.dailySheets[date][key][idx].done = val;
-  save();
-  renderPriorities(type, S.dailySheets[date][key]||[]);
-}
-
-function renderRating(type, val, icon, color) {
-  const container = document.getElementById('rate-'+type);
-  container.innerHTML = [1,2,3,4,5].map(i=>`
-    <span class="rate-icon ${val>=i?'active':''}" style="color:${color}" onclick="setRating('${type}',${i})">${icon}</span>
-  `).join('');
-}
-
-function setRating(type, val) {
-  const date = document.getElementById('dailyDate').value || today();
-  if(!S.dailySheets[date]) S.dailySheets[date]={};
-  const key = 'rate'+type.charAt(0).toUpperCase()+type.slice(1);
-  S.dailySheets[date][key] = val; save();
-  const colors = {work:'#f0a05b',family:'#f05b9e',self:'#5b6af0'};
-  const icons = {work:'○',family:'♥',self:'★'};
-  renderRating(type, val, icons[type], colors[type]);
-}
-
-function renderDailyMoodPick(val) {
-  const container = document.getElementById('daily-mood-pick');
-  const labels = ['😔','😕','😐','😊','🤩'];
-  container.innerHTML = labels.map((l,i)=>`
-    <span style="font-size:1.4rem;cursor:pointer;opacity:${val===i+1?1:0.35};transition:opacity 0.15s;" onclick="setDailyMood(${i+1})">${l}</span>
-  `).join('');
-}
-
-function setDailyMood(val) {
-  const date = document.getElementById('dailyDate').value || today();
-  if(!S.dailySheets[date]) S.dailySheets[date]={};
-  S.dailySheets[date].mood = val;
-  // also log to mood tracker
-  if(!S.moods[ym(date)]) S.moods[ym(date)] = {};
-  S.moods[ym(date)][date] = val;
-  save(); renderDailyMoodPick(val);
-}
-
-function saveDaily() {
-  const date = document.getElementById('dailyDate').value || today();
-  if(!S.dailySheets[date]) S.dailySheets[date]={};
-  const d = S.dailySheets[date];
-  d.affirmation = document.getElementById('ds-affirmation').value;
-  d.grateful = document.getElementById('ds-grateful').value;
-  d.highlights = document.getElementById('ds-highlights').value;
-  d.better = document.getElementById('ds-better').value;
-  d.thoughts = document.getElementById('ds-thoughts').value;
-  d.notes = document.getElementById('ds-notes').value;
-  save();
-  showToast('Day saved ✓');
-}
-
-document.getElementById('dailyDate').onchange = renderDaily;
-
-// ═══════════════════════════════════════
-// MONTH AT A GLANCE
-// ═══════════════════════════════════════
-function renderMonthGlance() {
-  const m = document.getElementById('calMonth').value || ym();
-  renderCalendar(m);
-  renderBdays(m);
-  document.getElementById('cal-notes').value = S.calNotes[m]||'';
-}
-
-function renderCalendar(m) {
-  const days = ['Su','Mo','Tu','We','Th','Fr','Sa'];
-  document.getElementById('cal-header').innerHTML = days.map(d=>`<div class="cal-day-label">${d}</div>`).join('');
-  const [y,mo] = m.split('-').map(Number);
-  const firstDay = new Date(y,mo-1,1).getDay();
-  const total = new Date(y,mo,0).getDate();
-  const events = S.events.filter(e=>e.date.startsWith(m));
-  const bdays = S.birthdays;
-  const td = today();
-  let cells = '';
-  for(let i=0;i<firstDay;i++) cells+=`<div class="cal-day empty"></div>`;
-  for(let d=1;d<=total;d++) {
-    const dateStr = `${m}-${String(d).padStart(2,'0')}`;
-    const dayEvents = events.filter(e=>e.date===dateStr);
-    const bdayMatches = bdays.filter(b=>{
-      const bDate = b.date.slice(5);
-      return bDate === dateStr.slice(5);
-    });
-    const isToday = dateStr===td;
-    const hasEvent = dayEvents.length>0||bdayMatches.length>0;
-    cells += `<div class="cal-day ${isToday?'today':''} ${hasEvent?'has-event':''}" onclick="calDayClick('${dateStr}')">
-      <div class="cal-num">${d}</div>
-      ${bdayMatches.map(b=>`<div class="cal-event bday">🎂 ${b.name}</div>`).join('')}
-      ${dayEvents.map(e=>`<div class="cal-event">${e.title}</div>`).join('')}
-    </div>`;
-  }
-  document.getElementById('cal-grid').innerHTML = cells;
-}
-
-function calDayClick(dateStr) {
-  openModal('Add event', `
-    <div class="form-group"><div class="form-label">Date</div><input type="date" class="form-input" id="evt-date" value="${dateStr}"/></div>
-    <div class="form-group"><div class="form-label">Event title</div><input type="text" class="form-input" id="evt-title" placeholder="e.g. Doctor appointment"/></div>
-    <div class="form-group"><div class="form-label">Type</div>
-      <select class="form-select" id="evt-type"><option value="event">Event</option><option value="appointment">Appointment</option><option value="reminder">Reminder</option></select>
-    </div>
-  `, () => {
-    const title = document.getElementById('evt-title').value.trim();
-    if(!title) return;
-    S.events.push({id:uid(),date:document.getElementById('evt-date').value,title,type:document.getElementById('evt-type').value});
-    save(); renderMonthGlance();
-  });
-}
-
-function openAddEvent() { calDayClick(today()); }
-
-function renderBdays(m) {
-  const bdays = S.birthdays;
-  document.getElementById('bday-list').innerHTML = bdays.length
-    ? bdays.map(b=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:0.45rem 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
-        <span>🎂 ${b.name}</span><span style="color:var(--text3);font-family:var(--mono);font-size:0.72rem;">${b.date.slice(5)}</span>
-        <button class="del-btn" onclick="delBday(${b.id})">✕</button>
-      </div>`).join('')
-    : '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">No birthdays added</div>';
-}
-
-function openAddBday() {
-  openModal('Add birthday', `
-    <div class="form-group"><div class="form-label">Name</div><input type="text" class="form-input" id="bday-name" placeholder="Friend / family name"/></div>
-    <div class="form-group"><div class="form-label">Date</div><input type="date" class="form-input" id="bday-date"/></div>
-  `, () => {
-    const name = document.getElementById('bday-name').value.trim();
-    if(!name) return;
-    S.birthdays.push({id:uid(),name,date:document.getElementById('bday-date').value});
-    save(); renderMonthGlance();
-  });
-}
-function delBday(id) { S.birthdays=S.birthdays.filter(b=>b.id!==id); save(); renderMonthGlance(); }
-
-document.getElementById('calMonth').onchange = renderMonthGlance;
-document.getElementById('cal-notes').addEventListener('input', function() {
-  S.calNotes[document.getElementById('calMonth').value||ym()] = this.value; save();
-});
-
-// ═══════════════════════════════════════
-// MONTH PLANNER
-// ═══════════════════════════════════════
-function renderMonthPlan() {
-  const m = document.getElementById('planMonth').value||ym();
-  document.getElementById('month-motto').value = S.monthMottos[m]||'';
-  renderMonthGoals(m); renderMonthTodos(m); renderMonthDates(m); renderShopping();
-}
-
-function renderMonthGoals(m) {
-  const goals = S.monthGoals[m]||[];
-  document.getElementById('month-goals-list').innerHTML = goals.map((g,i)=>`
-    <div class="check-item ${g.done?'done':''}">
-      <input type="checkbox" ${g.done?'checked':''} onchange="toggleMonthGoal('${m}',${i},this.checked)"/>
-      <span style="flex:1">${g.text}</span>
-      <button class="del-btn" onclick="delMonthGoal('${m}',${i})">✕</button>
-    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">No goals yet</div>';
-}
-
-function addMonthGoal() {
-  const m = document.getElementById('planMonth').value||ym();
-  const text = document.getElementById('month-goal-input').value.trim();
-  if(!text) return;
-  if(!S.monthGoals[m]) S.monthGoals[m]=[];
-  S.monthGoals[m].push({text,done:false});
-  document.getElementById('month-goal-input').value='';
-  save(); renderMonthGoals(m);
-}
-function toggleMonthGoal(m,i,v) { S.monthGoals[m][i].done=v; save(); renderMonthGoals(m); }
-function delMonthGoal(m,i) { S.monthGoals[m].splice(i,1); save(); renderMonthGoals(m); }
-
-function renderMonthTodos(m) {
-  const todos = S.monthTodos[m]||[];
-  document.getElementById('month-todo-list').innerHTML = todos.map((t,i)=>`
-    <div class="check-item ${t.done?'done':''}">
-      <input type="checkbox" ${t.done?'checked':''} onchange="toggleMonthTodo('${m}',${i},this.checked)"/>
-      <span style="flex:1">${t.text}</span>
-      <button class="del-btn" onclick="delMonthTodo('${m}',${i})">✕</button>
-    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">No tasks yet</div>';
-}
-function addMonthTodo() {
-  const m=document.getElementById('planMonth').value||ym();
-  const text=document.getElementById('month-todo-input').value.trim();
-  if(!text) return;
-  if(!S.monthTodos[m]) S.monthTodos[m]=[];
-  S.monthTodos[m].push({text,done:false});
-  document.getElementById('month-todo-input').value='';
-  save(); renderMonthTodos(m);
-}
-function toggleMonthTodo(m,i,v) { S.monthTodos[m][i].done=v; save(); renderMonthTodos(m); }
-function delMonthTodo(m,i) { S.monthTodos[m].splice(i,1); save(); renderMonthTodos(m); }
-
-function renderMonthDates(m) {
-  const dates = S.monthDates[m]||[];
-  document.getElementById('month-dates-list').innerHTML = dates.map((d,i)=>`
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
-      <span style="color:var(--text)">${d.label}</span>
-      <span style="color:var(--accent3);font-family:var(--mono);font-size:0.72rem;">${d.date}</span>
-      <button class="del-btn" onclick="delMonthDate('${m}',${i})">✕</button>
-    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">No dates added</div>';
-}
-function addMonthDate() {
-  const m=document.getElementById('planMonth').value||ym();
-  const label=document.getElementById('month-date-label').value.trim();
-  const date=document.getElementById('month-date-val').value;
-  if(!label||!date) return;
-  if(!S.monthDates[m]) S.monthDates[m]=[];
-  S.monthDates[m].push({label,date});
-  document.getElementById('month-date-label').value='';
-  document.getElementById('month-date-val').value='';
-  save(); renderMonthDates(m);
-}
-function delMonthDate(m,i) { S.monthDates[m].splice(i,1); save(); renderMonthDates(m); }
-
-function renderShopping() {
-  document.getElementById('shopping-list').innerHTML = S.shopping.map((item,i)=>`
-    <div class="shop-item">
-      <input type="checkbox" class="shop-check" ${item.bought?'checked':''} onchange="toggleShop(${i},this.checked)"/>
-      <span class="shop-name ${item.bought?'bought':''}">${item.name}</span>
-      <span class="shop-cat">${item.cat||''}</span>
-      <button class="shop-del" onclick="delShop(${i})">✕</button>
-    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">List is empty</div>';
-}
-function addShopItem() {
-  const text=document.getElementById('shop-input').value.trim();
-  if(!text) return;
-  S.shopping.push({name:text,bought:false,cat:''});
-  document.getElementById('shop-input').value='';
-  save(); renderShopping();
-}
-function toggleShop(i,v) { S.shopping[i].bought=v; save(); renderShopping(); }
-function delShop(i) { S.shopping.splice(i,1); save(); renderShopping(); }
-
-document.getElementById('planMonth').onchange = renderMonthPlan;
-document.getElementById('month-motto').addEventListener('input', function() {
-  S.monthMottos[document.getElementById('planMonth').value||ym()] = this.value; save();
-});
-
-// ═══════════════════════════════════════
-// ═══════════════════════════════════════
 // HABIT TRACKER
 // ═══════════════════════════════════════
 const HABIT_ICONS = [
@@ -1568,51 +1105,6 @@ function selectNewHabitIcon(icon) {
 
 function delHabit(id) { S.habits=S.habits.filter(h=>h.id!==id); save(); renderHabits(); if(habitEditMode) renderHabitEditPanel(); }
 document.getElementById('habitMonth').onchange=renderHabits;
-
-// ═══════════════════════════════════════
-// MOOD TRACKER
-// ═══════════════════════════════════════
-function renderMood() {
-  const m = document.getElementById('moodMonth').value||ym();
-  const moods = S.moods[m]||{};
-  const days = daysInMonth(m);
-
-  // Legend
-  document.getElementById('mood-legend').innerHTML = [1,2,3,4,5].map(v=>`
-    <div style="display:flex;align-items:center;gap:5px;font-size:0.75rem;color:var(--text2);">
-      <div style="width:12px;height:12px;border-radius:3px;background:${MOOD_COLORS[v]};"></div>${MOOD_LABELS[v]}
-    </div>`).join('');
-
-  // Day labels
-  document.getElementById('mood-day-labels').innerHTML = Array.from({length:days},(_,i)=>`<div style="text-align:center;font-size:0.6rem;color:var(--text3);font-family:var(--mono);">${i+1}</div>`).join('');
-
-  // Grid
-  document.getElementById('mood-grid').innerHTML = Array.from({length:days},(_,i)=>{
-    const d=String(i+1).padStart(2,'0');
-    const key=`${m}-${d}`;
-    const v=moods[key]||0;
-    return `<div class="mood-dot mood-${v}" style="${v?'border-color:'+MOOD_COLORS[v]:''}" onclick="setMood('${key}','${m}')" title="Day ${i+1}: ${MOOD_LABELS[v]||'Click to set'}"></div>`;
-  }).join('');
-}
-
-let moodPickTarget = null;
-function setMood(key, m) {
-  openModal('How was this day?', `
-    <div style="display:flex;justify-content:space-around;padding:0.5rem 0;">
-      ${[1,2,3,4,5].map(v=>`<div onclick="pickMood('${key}','${m}',${v})" style="text-align:center;cursor:pointer;padding:0.5rem;">
-        <div style="width:32px;height:32px;border-radius:6px;background:${MOOD_COLORS[v]};margin:0 auto 0.35rem;"></div>
-        <div style="font-size:0.72rem;color:var(--text2);">${MOOD_LABELS[v]}</div>
-      </div>`).join('')}
-    </div>
-  `, ()=>{});
-}
-
-function pickMood(key, m, val) {
-  if(!S.moods[m]) S.moods[m]={};
-  S.moods[m][key]=val; save(); closeModal(); renderMood();
-}
-
-document.getElementById('moodMonth').onchange=renderMood;
 
 // ═══════════════════════════════════════
 // SKINCARE
