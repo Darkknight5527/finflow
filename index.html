@@ -301,7 +301,8 @@ h1{font-size:1.75rem;font-weight:700;letter-spacing:-0.03em;}
 
     <div class="nav-section">Wellness</div>
     <button class="nav-item" data-page="skincare"><span class="nav-icon">✦</span><span>Skincare</span></button>
-    <button class="nav-item" data-page="health"><span class="nav-icon">♥</span><span>Health & Fitness</span></button>
+    <button class="nav-item" data-page="health"><span class="nav-icon">♥</span><span>Health &amp; Fitness</span></button>
+    <button class="nav-item" data-page="mealplan"><span class="nav-icon">🍱</span><span>Meal Planner</span></button>
 
     <div class="nav-section">Growth</div>
     <button class="nav-item" data-page="techlearn"><span class="nav-icon">⚡</span><span>Tech Learning</span></button>
@@ -309,14 +310,9 @@ h1{font-size:1.75rem;font-weight:700;letter-spacing:-0.03em;}
 
     <div class="nav-section">Finance</div>
     <button class="nav-item" data-page="budget"><span class="nav-icon">₹</span><span>Budget Tracker</span></button>
-    <button class="nav-item" data-page="investments"><span class="nav-icon">◈</span><span>Investments</span></button>
   </nav>
   <div class="sidebar-bottom">
-    <div class="phase-label">Current Phase</div>
-    <div class="phase-toggle">
-      <button class="phase-btn active" id="phaseIntern">Intern</button>
-      <button class="phase-btn" id="phaseJob">FTE</button>
-    </div>
+    <div style="font-size:0.68rem;color:var(--text3);padding:0 0.25rem;">Income: <strong style="color:var(--accent);font-family:var(--mono);">₹15,000/mo</strong></div>
   </div>
 </aside>
 
@@ -527,11 +523,23 @@ h1{font-size:1.75rem;font-weight:700;letter-spacing:-0.03em;}
 <section class="page" id="page-habits">
   <div class="page-header">
     <div><div class="eyebrow">Monthly</div><h1>Habit Tracker</h1></div>
-    <div style="display:flex;gap:0.5rem;">
+    <div style="display:flex;gap:0.5rem;align-items:center;">
       <select id="habitMonth" class="month-select"></select>
-      <button class="btn-primary" onclick="openAddHabit()">+ Habit</button>
+      <button class="btn-sec" id="habit-edit-btn" onclick="toggleHabitEditMode()">✏️ Edit habits</button>
+      <button class="btn-primary" onclick="openAddHabit()">+ Add habit</button>
     </div>
   </div>
+
+  <!-- EDIT MODE PANEL -->
+  <div id="habit-edit-panel" style="display:none;margin-bottom:1rem;">
+    <div class="card full">
+      <div class="card-header"><span class="card-title">✏️ Edit mode — drag to reorder, click to rename</span>
+        <button class="btn-primary" onclick="toggleHabitEditMode()">Done editing</button>
+      </div>
+      <div id="habit-edit-list"></div>
+    </div>
+  </div>
+
   <!-- Week rings -->
   <div class="week-rings" id="week-rings"></div>
   <!-- Grid -->
@@ -623,14 +631,48 @@ h1{font-size:1.75rem;font-weight:700;letter-spacing:-0.03em;}
       <div id="workout-log"></div>
     </div>
   </div>
+  <div class="card full">
+    <div class="card-header"><span class="card-title">Weight log</span><button class="btn-ghost" onclick="logWeight()">+ Entry</button></div>
+    <div id="weight-log"></div>
+  </div>
+</section>
+
+<!-- MEAL PLANNER -->
+<section class="page" id="page-mealplan">
+  <div class="page-header">
+    <div><div class="eyebrow">Wellness</div><h1>Meal Planner</h1></div>
+    <div style="display:flex;gap:0.5rem;align-items:center;">
+      <select id="mealWeek" class="month-select"></select>
+      <button class="btn-ghost" onclick="clearWeekMeals()">Clear week</button>
+      <button class="btn-primary" onclick="openAddMealItem()">+ Food item</button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="grid4" id="meal-kpis"></div>
+
+  <!-- Weekly plan grid -->
+  <div class="card full" style="margin-bottom:1rem;">
+    <div class="card-header"><span class="card-title">Weekly meal prep plan</span><span class="card-badge" id="meal-week-label"></span></div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;min-width:700px;" id="meal-week-table"></table>
+    </div>
+  </div>
+
+  <!-- Ingredient list -->
   <div class="grid2">
     <div class="card">
-      <div class="card-header"><span class="card-title">Weight log</span><button class="btn-ghost" onclick="logWeight()">+ Entry</button></div>
-      <div id="weight-log"></div>
+      <div class="card-header">
+        <span class="card-title">🛒 Ingredients needed</span>
+        <button class="btn-ghost" onclick="copyIngredients()">Copy list</button>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text3);margin-bottom:0.75rem;">Auto-generated from your week's meals</div>
+      <div id="ingredient-list"></div>
     </div>
     <div class="card">
-      <div class="card-header"><span class="card-title">Meals today</span><button class="btn-ghost" onclick="logMeal()">+ Meal</button></div>
-      <div id="meal-log"></div>
+      <div class="card-header"><span class="card-title">📦 My food library</span><button class="btn-ghost" onclick="openAddMealItem()">+ Add food</button></div>
+      <div style="font-size:0.75rem;color:var(--text3);margin-bottom:0.75rem;">Foods you've saved with their ingredients</div>
+      <div id="food-library"></div>
     </div>
   </div>
 </section>
@@ -713,28 +755,6 @@ h1{font-size:1.75rem;font-weight:700;letter-spacing:-0.03em;}
 </section>
 
 <!-- INVESTMENTS -->
-<section class="page" id="page-investments">
-  <div class="page-header">
-    <div><div class="eyebrow">Finance</div><h1>Investments</h1></div>
-    <button class="btn-primary" onclick="openAddInvestment()">+ Add</button>
-  </div>
-  <div class="grid4" id="invest-kpis"></div>
-  <div class="card full">
-    <div class="card-header"><span class="card-title">Holdings</span></div>
-    <table class="data-table">
-      <thead><tr><th>Name</th><th>Type</th><th>Monthly SIP</th><th>Returns</th><th></th></tr></thead>
-      <tbody id="invest-body"></tbody>
-    </table>
-  </div>
-  <div class="card full" style="margin-top:1rem;">
-    <div class="card-header"><span class="card-title">EPF tracker</span><span class="card-badge">Company benefit</span></div>
-    <div id="epf-info"></div>
-  </div>
-  <div class="card full" style="margin-top:1rem;">
-    <div class="card-header"><span class="card-title">Growth projection</span><span class="card-badge">11% p.a.</span></div>
-    <div id="invest-projection" style="height:180px;"></div>
-  </div>
-</section>
 
 </main>
 
@@ -760,14 +780,14 @@ const defaultState = {
   phase: 'intern',
   dailySheets: {},
   habits: [
-    {id:1,name:'Wake up at 05:00',color:0},
-    {id:2,name:'Gym / Exercise',color:1},
-    {id:3,name:'Reading / Learning',color:2},
-    {id:4,name:'Budget Tracking',color:3},
-    {id:5,name:'V93K Study',color:4},
-    {id:6,name:'No Junk Food',color:5},
-    {id:7,name:'Goal Journaling',color:6},
-    {id:8,name:'Cold Shower',color:7},
+    {id:1,name:'Wake up at 05:00',icon:'⏰',color:0},
+    {id:2,name:'Gym / Exercise',icon:'🏋️',color:1},
+    {id:3,name:'Reading / Learning',icon:'📚',color:2},
+    {id:4,name:'Budget Tracking',icon:'💰',color:3},
+    {id:5,name:'V93K Study',icon:'📖',color:4},
+    {id:6,name:'No Junk Food',icon:'🥗',color:5},
+    {id:7,name:'Goal Journaling',icon:'✍️',color:6},
+    {id:8,name:'Cold Shower',icon:'🚿',color:7},
   ],
   habitLogs: {},
   moods: {},
@@ -855,10 +875,7 @@ function getMonths(n=12) {
   return months;
 }
 
-const PHASES = {
-  intern: { label:'Internship', income:15000 },
-  job: { label:'Post-Absorption', income:42500 }
-};
+const MONTHLY_INCOME = 15000;
 
 const BUDGET_CATS = {
   'Fixed Expenses': ['Rent','EMI','Insurance'],
@@ -886,14 +903,8 @@ document.querySelectorAll('.nav-item').forEach(btn => {
   });
 });
 
-document.getElementById('phaseIntern').onclick = () => setPhase('intern');
-document.getElementById('phaseJob').onclick = () => setPhase('job');
-function setPhase(p) {
-  S.phase = p; save();
-  document.getElementById('phaseIntern').classList.toggle('active', p==='intern');
-  document.getElementById('phaseJob').classList.toggle('active', p==='job');
-  renderPage(currentPage());
-}
+
+
 function currentPage() { return document.querySelector('.page.active')?.id?.replace('page-','') || 'dashboard'; }
 
 function populateSelects() {
@@ -918,10 +929,10 @@ function renderPage(page) {
     case 'mood': renderMood(); break;
     case 'skincare': renderSkincare(); break;
     case 'health': renderHealth(); break;
+    case 'mealplan': renderMealPlan(); break;
     case 'techlearn': renderTechLearn(); break;
     case 'longgoals': renderLTG(); break;
     case 'budget': renderBudget(); break;
-    case 'investments': renderInvestments(); break;
   }
 }
 
@@ -933,7 +944,7 @@ function renderDashboard() {
   const td = today();
   const exps = S.expenses[curYm] || [];
   const totalSpent = exps.reduce((s,e)=>s+e.amount,0);
-  const income = PHASES[S.phase].income;
+  const income = MONTHLY_INCOME;
   const logs = S.habitLogs[curYm] || {};
   const todayLogs = logs[td] || {};
   const habitDone = S.habits.filter(h=>todayLogs[h.id]).length;
@@ -944,7 +955,7 @@ function renderDashboard() {
     <div class="kpi"><div class="kpi-label">Habits today</div><div class="kpi-value kpi-accent">${habitDone}/${S.habits.length}</div><div class="kpi-sub">Keep the streak</div></div>
     <div class="kpi"><div class="kpi-label">Budget remaining</div><div class="kpi-value ${income-totalSpent<0?'kpi-danger':'kpi-accent'}">${fmt(income-totalSpent)}</div><div class="kpi-sub">${Math.round(totalSpent/income*100)}% spent</div></div>
     <div class="kpi"><div class="kpi-label">Tech progress</div><div class="kpi-value kpi-purple">${Math.round(techDone/techTotal*100)}%</div><div class="kpi-sub">${techDone}/${techTotal} topics</div></div>
-    <div class="kpi"><div class="kpi-label">Today</div><div class="kpi-value" style="font-size:0.9rem;">${new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}</div><div class="kpi-sub">${S.phase==='intern'?'Internship':'Full-time'} phase</div></div>
+    <div class="kpi"><div class="kpi-label">Today</div><div class="kpi-value" style="font-size:0.9rem;">${new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}</div><div class="kpi-sub">Internship phase</div></div>
   `;
 
   // Today habits quick
@@ -1293,13 +1304,111 @@ document.getElementById('month-motto').addEventListener('input', function() {
 });
 
 // ═══════════════════════════════════════
+// ═══════════════════════════════════════
 // HABIT TRACKER
 // ═══════════════════════════════════════
+const HABIT_ICONS = [
+  {emoji:'⏰',label:'Wake up'},
+  {emoji:'🏋️',label:'Gym'},
+  {emoji:'🚫',label:'Avoid'},
+  {emoji:'📚',label:'Reading'},
+  {emoji:'💰',label:'Budget'},
+  {emoji:'💻',label:'Work/Study'},
+  {emoji:'🧘',label:'Meditation'},
+  {emoji:'🚿',label:'Cold shower'},
+  {emoji:'💧',label:'Water'},
+  {emoji:'🏃',label:'Run'},
+  {emoji:'🥗',label:'Healthy food'},
+  {emoji:'😴',label:'Sleep'},
+  {emoji:'✍️',label:'Journal'},
+  {emoji:'📵',label:'No social media'},
+  {emoji:'🧹',label:'Clean'},
+  {emoji:'🎯',label:'Goal focus'},
+  {emoji:'💊',label:'Supplements'},
+  {emoji:'🎸',label:'Hobby'},
+  {emoji:'🙏',label:'Gratitude'},
+  {emoji:'📞',label:'Family call'},
+  {emoji:'🌅',label:'Morning routine'},
+  {emoji:'🔋',label:'No alcohol'},
+  {emoji:'📖',label:'V93K study'},
+  {emoji:'⚡',label:'Tech learning'},
+];
+
+const COLORS_HEX = ['#00e5a0','#5b6af0','#f0a05b','#f05b9e','#a0d4f0','#e0a0f0','#f0e05b','#f05b5b'];
+
+let habitEditMode = false;
+
+function toggleHabitEditMode() {
+  habitEditMode = !habitEditMode;
+  const panel = document.getElementById('habit-edit-panel');
+  const btn = document.getElementById('habit-edit-btn');
+  panel.style.display = habitEditMode ? 'block' : 'none';
+  btn.textContent = habitEditMode ? '✅ Exit edit' : '✏️ Edit habits';
+  if(habitEditMode) renderHabitEditPanel();
+}
+
+function renderHabitEditPanel() {
+  document.getElementById('habit-edit-list').innerHTML = S.habits.map((h,i)=>`
+    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.65rem 0;border-bottom:1px solid var(--border);" id="hedit-${h.id}">
+      <span style="color:var(--text3);cursor:grab;font-size:1rem;">⠿</span>
+      <span style="font-size:1.5rem;cursor:pointer;" onclick="openIconPicker(${h.id})" title="Change icon">${h.icon||'⭐'}</span>
+      <input type="text" value="${h.name}" class="form-input" style="flex:1;padding:0.35rem 0.6rem;font-size:0.83rem;"
+        onchange="renameHabit(${h.id},this.value)" onblur="renameHabit(${h.id},this.value)"/>
+      <select class="form-select" style="width:110px;padding:0.35rem 0.5rem;font-size:0.75rem;" onchange="recolorHabit(${h.id},this.value)">
+        ${COLORS_HEX.map((c,ci)=>`<option value="${ci}" ${h.color===ci?'selected':''} style="background:${c}">Color ${ci+1}</option>`).join('')}
+      </select>
+      <button onclick="moveHabit(${i},-1)" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--text2);padding:0.2rem 0.5rem;cursor:pointer;">↑</button>
+      <button onclick="moveHabit(${i},1)" style="background:none;border:1px solid var(--border);border-radius:4px;color:var(--text2);padding:0.2rem 0.5rem;cursor:pointer;">↓</button>
+      <button class="del-btn" onclick="delHabit(${h.id})" title="Delete habit">🗑</button>
+    </div>
+  `).join('') || '<div style="color:var(--text3);font-size:0.82rem;padding:1rem;">No habits yet — add one!</div>';
+}
+
+function openIconPicker(hid) {
+  const grid = HABIT_ICONS.map(ic=>`
+    <div onclick="setHabitIcon(${hid},'${ic.emoji}')" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:0.5rem;border-radius:var(--rs);cursor:pointer;border:1px solid var(--border);transition:border-color 0.15s;"
+      onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+      <span style="font-size:1.5rem;">${ic.emoji}</span>
+      <span style="font-size:0.6rem;color:var(--text3);text-align:center;">${ic.label}</span>
+    </div>`).join('');
+  openModal('Pick an icon', `
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:0.5rem;">${grid}</div>
+    <div style="margin-top:0.75rem;">
+      <div class="form-label" style="margin-bottom:0.3rem;">Or type any emoji</div>
+      <input type="text" class="form-input" id="custom-icon" placeholder="e.g. 🎯" maxlength="4"/>
+    </div>
+  `, ()=>{
+    const custom = document.getElementById('custom-icon').value.trim();
+    if(custom) setHabitIcon(hid, custom);
+  });
+}
+
+function setHabitIcon(hid, icon) {
+  const h = S.habits.find(x=>x.id===hid);
+  if(h) { h.icon=icon; save(); closeModal(); renderHabitEditPanel(); renderHabits(); }
+}
+
+function renameHabit(hid, name) {
+  const h = S.habits.find(x=>x.id===hid);
+  if(h && name.trim()) { h.name=name.trim(); save(); renderHabits(); }
+}
+
+function recolorHabit(hid, colorIdx) {
+  const h = S.habits.find(x=>x.id===hid);
+  if(h) { h.color=+colorIdx; save(); renderHabitEditPanel(); renderHabits(); }
+}
+
+function moveHabit(idx, dir) {
+  const newIdx = idx+dir;
+  if(newIdx<0||newIdx>=S.habits.length) return;
+  [S.habits[idx],S.habits[newIdx]]=[S.habits[newIdx],S.habits[idx]];
+  save(); renderHabitEditPanel(); renderHabits();
+}
+
 function renderHabits() {
   const m = document.getElementById('habitMonth').value||ym();
   const logs = S.habitLogs[m]||{};
   const days = daysInMonth(m);
-  const COLORS_HEX = ['#00e5a0','#5b6af0','#f0a05b','#f05b9e','#a0d4f0','#e0a0f0','#f0e05b','#f05b5b'];
 
   // Week rings
   const weeksData = [1,2,3,4,5].map(w=>{
@@ -1312,7 +1421,7 @@ function renderHabits() {
       done+=S.habits.filter(h=>dayLog[h.id]).length;
     }
     return {w,pct:total>0?Math.round(done/total*100):0,days:`${start}–${Math.min(end,days)}`};
-  }).filter(w=>w.days.split('–')[0]<=days);
+  }).filter(w=>parseInt(w.days.split('–')[0])<=days);
 
   document.getElementById('week-rings').innerHTML = weeksData.map(w=>`
     <div class="week-ring-card">
@@ -1330,31 +1439,33 @@ function renderHabits() {
   // Main grid
   let headerCells = `<th class="habit-name-col">Habit</th>`;
   for(let d=1;d<=days;d++) headerCells+=`<th>${d}</th>`;
-  headerCells+=`<th>%</th><th>Done</th>`;
+  headerCells+=`<th>%</th><th>✓</th>`;
 
-  let rows = S.habits.map((h,hi)=>{
+  let rows = S.habits.map((h)=>{
     let cells='';
     let done=0;
     const color=COLORS_HEX[h.color%COLORS_HEX.length];
+    const icon=h.icon||'⭐';
     for(let d=1;d<=days;d++){
       const key=`${m}-${String(d).padStart(2,'0')}`;
       const checked=(logs[key]||{})[h.id]||false;
       if(checked) done++;
-      cells+=`<td><div class="habit-check ${checked?'done':''}" onclick="toggleHabit(${h.id},'${m}',${d})" style="${checked?'background:'+color+';border-color:'+color+';':''}">✓</div></td>`;
+      cells+=`<td><div class="habit-check ${checked?'done':''}" onclick="toggleHabit(${h.id},'${m}',${d})" style="${checked?'background:'+color+';border-color:'+color+';color:#000':''}">✓</div></td>`;
     }
     const pct=Math.round(done/days*100);
     return `<tr>
-      <td class="habit-name"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:6px;"></span>${h.name}
-        <button class="del-btn" onclick="delHabit(${h.id})" style="margin-left:4px;font-size:0.65rem;">✕</button>
+      <td class="habit-name">
+        <span style="font-size:1rem;margin-right:6px;">${icon}</span>
+        <span style="color:var(--text2);">${h.name}</span>
       </td>
       ${cells}
-      <td class="habit-pct" style="color:${color}">${pct}%</td>
-      <td class="habit-pct" style="color:var(--text3)">${done}</td>
+      <td class="habit-pct" style="color:${color};font-weight:600;">${pct}%</td>
+      <td class="habit-pct" style="color:var(--text3);">${done}</td>
     </tr>`;
   }).join('');
 
   // Daily % row
-  let pctRow=`<tr><td class="habit-name" style="color:var(--text3);font-size:0.7rem;">Daily %</td>`;
+  let pctRow=`<tr><td class="habit-name" style="color:var(--text3);font-size:0.7rem;font-style:italic;">Daily %</td>`;
   let monthDone=0,monthTotal=0;
   for(let d=1;d<=days;d++){
     const key=`${m}-${String(d).padStart(2,'0')}`;
@@ -1372,14 +1483,16 @@ function renderHabits() {
 
   // Analysis
   document.getElementById('habit-analysis').innerHTML=`<div style="display:flex;flex-direction:column;gap:0.65rem;">
-    ${S.habits.map((h,hi)=>{
+    ${S.habits.map((h)=>{
       const color=COLORS_HEX[h.color%COLORS_HEX.length];
+      const icon=h.icon||'⭐';
       let done=0;
       for(let d=1;d<=days;d++){const key=`${m}-${String(d).padStart(2,'0')}`;if((logs[key]||{})[h.id])done++;}
       const pct=Math.round(done/days*100);
       return `<div>
-        <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text2);margin-bottom:0.25rem;">
-          <span>${h.name}</span><span style="font-family:var(--mono);color:${color}">${pct}% (${done}/${days})</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;color:var(--text2);margin-bottom:0.3rem;">
+          <span>${icon} ${h.name}</span>
+          <span style="font-family:var(--mono);color:${color}">${pct}% &nbsp;(${done}/${days} days)</span>
         </div>
         <div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${color};"></div></div>
       </div>`;
@@ -1387,7 +1500,8 @@ function renderHabits() {
   </div>`;
 
   // Line chart
-  const w=document.getElementById('habit-chart').offsetWidth||600, h2=120;
+  const chartEl=document.getElementById('habit-chart');
+  const w=chartEl.offsetWidth||600, h2=120;
   const pts=[];
   for(let d=1;d<=days;d++){
     const key=`${m}-${String(d).padStart(2,'0')}`;
@@ -1398,12 +1512,14 @@ function renderHabits() {
   const toY=v=>h2-10-(v/100)*(h2-20);
   const path=pts.map((v,i)=>`${i===0?'M':'L'}${toX(i)},${toY(v)}`).join(' ');
   const area=path+` L${toX(days-1)},${h2-10} L${toX(0)},${h2-10} Z`;
-  document.getElementById('habit-chart').innerHTML=`<svg viewBox="0 0 ${w} ${h2}" width="100%" height="${h2}">
+  chartEl.innerHTML=`<svg viewBox="0 0 ${w} ${h2}" width="100%" height="${h2}">
     <defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00e5a0" stop-opacity="0.3"/><stop offset="100%" stop-color="#00e5a0" stop-opacity="0.02"/></linearGradient></defs>
     <path d="${area}" fill="url(#hg)"/>
     <path d="${path}" fill="none" stroke="#00e5a0" stroke-width="2" stroke-linecap="round"/>
     ${[0,25,50,75,100].map(v=>`<text x="15" y="${toY(v)+4}" fill="var(--text3)" font-size="8" font-family="JetBrains Mono" text-anchor="end">${v}%</text>`).join('')}
   </svg>`;
+
+  if(habitEditMode) renderHabitEditPanel();
 }
 
 function toggleHabit(hid, m, day) {
@@ -1415,16 +1531,42 @@ function toggleHabit(hid, m, day) {
 }
 
 function openAddHabit() {
-  openModal('Add habit', `
+  const grid = HABIT_ICONS.map(ic=>`
+    <div onclick="selectNewHabitIcon('${ic.emoji}')" id="ni-${ic.emoji}" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:0.45rem;border-radius:var(--rs);cursor:pointer;border:1px solid var(--border);transition:all 0.15s;"
+      onmouseover="this.style.borderColor='var(--accent)'" onmouseout="if(selectedNewIcon!=='${ic.emoji}')this.style.borderColor='var(--border)'">
+      <span style="font-size:1.3rem;">${ic.emoji}</span>
+      <span style="font-size:0.58rem;color:var(--text3);text-align:center;">${ic.label}</span>
+    </div>`).join('');
+  openModal('Add new habit', `
     <div class="form-group"><div class="form-label">Habit name</div><input type="text" class="form-input" id="h-name" placeholder="e.g. Meditate 10 mins"/></div>
+    <div class="form-group">
+      <div class="form-label">Choose an icon <span id="selected-icon-preview" style="font-size:1.2rem;margin-left:0.5rem;">⭐</span></div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:0.4rem;max-height:200px;overflow-y:auto;">${grid}</div>
+      <div style="margin-top:0.5rem;">
+        <input type="text" class="form-input" id="custom-new-icon" placeholder="Or type any emoji..." maxlength="4" oninput="selectNewHabitIcon(this.value)"/>
+      </div>
+    </div>
   `, () => {
     const name=document.getElementById('h-name').value.trim();
     if(!name) return;
-    S.habits.push({id:uid(),name,color:S.habits.length%8});
+    S.habits.push({id:uid(),name,icon:selectedNewIcon||'⭐',color:S.habits.length%8});
+    selectedNewIcon='⭐';
     save(); renderHabits();
+    if(habitEditMode) renderHabitEditPanel();
   });
 }
-function delHabit(id) { S.habits=S.habits.filter(h=>h.id!==id); save(); renderHabits(); }
+
+let selectedNewIcon = '⭐';
+function selectNewHabitIcon(icon) {
+  selectedNewIcon = icon;
+  const preview = document.getElementById('selected-icon-preview');
+  if(preview) preview.textContent = icon;
+  document.querySelectorAll('[id^="ni-"]').forEach(el=>{ el.style.borderColor='var(--border)'; el.style.background=''; });
+  const target = document.getElementById('ni-'+icon);
+  if(target) { target.style.borderColor='var(--accent)'; target.style.background='rgba(0,229,160,0.08)'; }
+}
+
+function delHabit(id) { S.habits=S.habits.filter(h=>h.id!==id); save(); renderHabits(); if(habitEditMode) renderHabitEditPanel(); }
 document.getElementById('habitMonth').onchange=renderHabits;
 
 // ═══════════════════════════════════════
@@ -1550,8 +1692,8 @@ function renderHealth() {
   document.getElementById('health-kpis').innerHTML=`
     <div class="kpi"><div class="kpi-label">Water today</div><div class="kpi-value kpi-purple">${h.water}/8</div><div class="kpi-sub">glasses</div></div>
     <div class="kpi"><div class="kpi-label">Workouts today</div><div class="kpi-value kpi-accent">${(h.workouts||[]).length}</div><div class="kpi-sub">sessions</div></div>
-    <div class="kpi"><div class="kpi-label">Meals logged</div><div class="kpi-value kpi-orange">${(h.meals||[]).length}</div><div class="kpi-sub">today</div></div>
     <div class="kpi"><div class="kpi-label">Weight</div><div class="kpi-value">${lastWeight?lastWeight+'kg':'—'}</div><div class="kpi-sub">last recorded</div></div>
+    <div class="kpi"><div class="kpi-label">Meal plan</div><div class="kpi-value kpi-orange" style="font-size:0.85rem;cursor:pointer;" onclick="navigate('mealplan')">View →</div><div class="kpi-sub">Weekly planner</div></div>
   `;
 
   // Water
@@ -1747,12 +1889,12 @@ function renderBudget() {
   const m=document.getElementById('budgetMonth').value||ym();
   const exps=S.expenses[m]||[];
   const plans=S.budgetPlans[m]||{};
-  const income=PHASES[S.phase].income;
+  const income=MONTHLY_INCOME;
   const totalSpent=exps.reduce((s,e)=>s+e.amount,0);
   const totalBudgeted=Object.values(plans).reduce((s,v)=>s+v,0);
 
   document.getElementById('budget-kpis').innerHTML=`
-    <div class="kpi"><div class="kpi-label">Income</div><div class="kpi-value kpi-accent">${fmt(income)}</div><div class="kpi-sub">${PHASES[S.phase].label}</div></div>
+    <div class="kpi"><div class="kpi-label">Income</div><div class="kpi-value kpi-accent">${fmt(income)}</div><div class="kpi-sub">Internship stipend</div></div>
     <div class="kpi"><div class="kpi-label">Budgeted</div><div class="kpi-value kpi-purple">${fmt(totalBudgeted)}</div></div>
     <div class="kpi"><div class="kpi-label">Actual spent</div><div class="kpi-value ${totalSpent>income?'kpi-danger':'kpi-warn'}">${fmt(totalSpent)}</div></div>
     <div class="kpi"><div class="kpi-label">Remaining</div><div class="kpi-value ${income-totalSpent<0?'kpi-danger':'kpi-accent'}">${fmt(income-totalSpent)}</div></div>
@@ -1825,87 +1967,6 @@ document.getElementById('budget-reflection').addEventListener('input',function()
 });
 
 // ═══════════════════════════════════════
-// INVESTMENTS (from Finflow)
-// ═══════════════════════════════════════
-function renderInvestments() {
-  const totalSIP=S.investments.reduce((s,i)=>s+i.monthly,0);
-  const months=S.epfMonths||0;
-  const epfTotal=months*2400*2;
-
-  document.getElementById('invest-kpis').innerHTML=`
-    <div class="kpi"><div class="kpi-label">Monthly SIP</div><div class="kpi-value kpi-accent">${fmt(totalSIP)}</div></div>
-    <div class="kpi"><div class="kpi-label">Instruments</div><div class="kpi-value">${S.investments.length}</div></div>
-    <div class="kpi"><div class="kpi-label">EPF corpus</div><div class="kpi-value kpi-warn">${fmt(epfTotal)}</div><div class="kpi-sub">${months} months</div></div>
-    <div class="kpi"><div class="kpi-label">Projected 10yr</div><div class="kpi-value kpi-purple">${fmt(totalSIP*((Math.pow(1.11/12+1,120)-1)/((0.11/12))))} </div></div>
-  `;
-
-  document.getElementById('invest-body').innerHTML=S.investments.map(inv=>`<tr>
-    <td>${inv.name}</td>
-    <td><span class="badge badge-green">${inv.type.toUpperCase()}</span></td>
-    <td style="font-family:var(--mono);">${fmt(inv.monthly)}/mo</td>
-    <td style="color:var(--accent);font-family:var(--mono);">+${inv.returns}%</td>
-    <td><button class="del-btn" onclick="delInvestment(${inv.id})">✕</button></td>
-  </tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:1.5rem;">No investments — add one!</td></tr>';
-
-  document.getElementById('epf-info').innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:1rem;">
-      <div style="background:var(--surface2);border-radius:var(--rs);padding:0.9rem;"><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;margin-bottom:0.35rem;">Basic salary</div><div style="font-family:var(--mono);font-size:1rem;color:var(--text);">₹20,000</div></div>
-      <div style="background:var(--surface2);border-radius:var(--rs);padding:0.9rem;"><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;margin-bottom:0.35rem;">Your 12%</div><div style="font-family:var(--mono);font-size:1rem;color:var(--accent2);">₹2,400/mo</div></div>
-      <div style="background:var(--surface2);border-radius:var(--rs);padding:0.9rem;"><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;margin-bottom:0.35rem;">Employer match</div><div style="font-family:var(--mono);font-size:1rem;color:var(--accent);">₹2,400/mo</div></div>
-      <div style="background:var(--surface2);border-radius:var(--rs);padding:0.9rem;"><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;margin-bottom:0.35rem;">EPF rate</div><div style="font-family:var(--mono);font-size:1rem;color:var(--accent3);">8.25% p.a.</div></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:1rem;">
-      <span style="font-size:0.78rem;color:var(--text2);">Months at job:</span>
-      <input type="number" id="epf-months" class="form-input" style="width:80px;" value="${months}" min="0"/>
-      <button class="btn-primary" onclick="updateEPF()">Update</button>
-      <span style="font-size:0.78rem;color:var(--text3);">Total EPF: <strong style="color:var(--accent);font-family:var(--mono);">${fmt(epfTotal)}</strong></span>
-    </div>
-  `;
-
-  renderProjection();
-}
-
-function updateEPF(){S.epfMonths=+document.getElementById('epf-months').value;save();renderInvestments();}
-function delInvestment(id){S.investments=S.investments.filter(i=>i.id!==id);save();renderInvestments();}
-
-function openAddInvestment(){
-  openModal('Add investment',`
-    <div class="form-group"><div class="form-label">Name</div><input type="text" class="form-input" id="i-name" placeholder="e.g. Nifty Next 50 Fund"/></div>
-    <div class="form-group"><div class="form-label">Type</div><select class="form-select" id="i-type"><option value="mf">Mutual Fund</option><option value="stock">Stock</option><option value="fd">FD</option></select></div>
-    <div class="form-group"><div class="form-label">Monthly SIP (₹)</div><input type="number" class="form-input" id="i-monthly" placeholder="3000"/></div>
-    <div class="form-group"><div class="form-label">Expected returns (% p.a.)</div><input type="number" class="form-input" id="i-returns" placeholder="11"/></div>
-  `,()=>{
-    const name=document.getElementById('i-name').value.trim();
-    const monthly=+document.getElementById('i-monthly').value;
-    if(!name||!monthly) return;
-    S.investments.push({id:uid(),name,type:document.getElementById('i-type').value,monthly,returns:+document.getElementById('i-returns').value||11});
-    save(); renderInvestments();
-  });
-}
-
-function renderProjection() {
-  const container=document.getElementById('invest-projection');
-  const w=container.offsetWidth||600,h=180;
-  const monthly=S.investments.reduce((s,i)=>s+i.monthly,0);
-  const years=10, pts=[];
-  for(let m=0;m<=years*12;m++) pts.push(monthly*((Math.pow(1+0.11/12,m)-1)/(0.11/12)));
-  const max=pts[pts.length-1]||1;
-  const toX=i=>(i/(years*12))*(w-60)+30;
-  const toY=v=>h-20-(v/max)*(h-40);
-  const path=pts.map((v,i)=>`${i===0?'M':'L'}${toX(i)},${toY(v)}`).join(' ');
-  const area=path+` L${toX(years*12)},${h-20} L${toX(0)},${h-20} Z`;
-  const labels=[0,2,4,6,8,10].map(y=>`
-    <text x="${toX(y*12)}" y="${h-4}" text-anchor="middle" fill="var(--text3)" font-size="9" font-family="JetBrains Mono">Yr ${y}</text>
-    <text x="${toX(y*12)}" y="${toY(pts[y*12])-5}" text-anchor="middle" fill="var(--text3)" font-size="8" font-family="JetBrains Mono">${fmt(pts[y*12])}</text>`).join('');
-  container.innerHTML=`<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}">
-    <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00e5a0" stop-opacity="0.25"/><stop offset="100%" stop-color="#00e5a0" stop-opacity="0.02"/></linearGradient></defs>
-    <path d="${area}" fill="url(#pg)"/>
-    <path d="${path}" fill="none" stroke="#00e5a0" stroke-width="2.5" stroke-linecap="round"/>
-    ${labels}
-  </svg>`;
-}
-
-// ═══════════════════════════════════════
 // MODAL ENGINE
 // ═══════════════════════════════════════
 let _modalCb=null;
@@ -1932,14 +1993,295 @@ function showToast(msg) {
 }
 
 // ═══════════════════════════════════════
+// NAVIGATE HELPER
+// ═══════════════════════════════════════
+function navigate(page) {
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  const btn = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if(btn) btn.classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  renderPage(page);
+}
+
+// ═══════════════════════════════════════
+// MEAL PLANNER
+// ═══════════════════════════════════════
+// Default food library with ingredients
+if(!S.mealLibrary) S.mealLibrary = [
+  {id:1, name:'Oats + Banana', category:'Breakfast', cal:320, ingredients:[{name:'Oats',qty:'80g'},{name:'Banana',qty:'1'},{name:'Milk',qty:'200ml'},{name:'Honey',qty:'1 tsp'}]},
+  {id:2, name:'Dal Rice', category:'Lunch', cal:450, ingredients:[{name:'Toor dal',qty:'60g'},{name:'Rice',qty:'100g'},{name:'Onion',qty:'1'},{name:'Tomato',qty:'1'},{name:'Cumin seeds',qty:'1 tsp'},{name:'Oil',qty:'1 tbsp'}]},
+  {id:3, name:'Roti + Sabzi', category:'Dinner', cal:380, ingredients:[{name:'Wheat flour',qty:'100g'},{name:'Mixed vegetables',qty:'150g'},{name:'Oil',qty:'1 tbsp'},{name:'Spices',qty:'as needed'}]},
+  {id:4, name:'Egg Bhurji + Toast', category:'Breakfast', cal:370, ingredients:[{name:'Eggs',qty:'3'},{name:'Bread',qty:'2 slices'},{name:'Onion',qty:'½'},{name:'Tomato',qty:'½'},{name:'Oil',qty:'1 tsp'},{name:'Spices',qty:'as needed'}]},
+  {id:5, name:'Chicken Rice Bowl', category:'Lunch', cal:520, ingredients:[{name:'Chicken breast',qty:'150g'},{name:'Rice',qty:'100g'},{name:'Capsicum',qty:'1'},{name:'Soy sauce',qty:'1 tbsp'},{name:'Garlic',qty:'2 cloves'},{name:'Oil',qty:'1 tbsp'}]},
+  {id:6, name:'Paneer Bhurji', category:'Dinner', cal:400, ingredients:[{name:'Paneer',qty:'100g'},{name:'Onion',qty:'1'},{name:'Tomato',qty:'1'},{name:'Capsicum',qty:'½'},{name:'Oil',qty:'1 tbsp'},{name:'Spices',qty:'as needed'}]},
+  {id:7, name:'Greek Yogurt + Fruits', category:'Snack', cal:200, ingredients:[{name:'Greek yogurt',qty:'150g'},{name:'Mixed fruits',qty:'100g'},{name:'Honey',qty:'1 tsp'}]},
+  {id:8, name:'Boiled Eggs + Salad', category:'Snack', cal:250, ingredients:[{name:'Eggs',qty:'2'},{name:'Cucumber',qty:'1'},{name:'Tomato',qty:'1'},{name:'Lettuce',qty:'handful'},{name:'Lemon',qty:'½'}]},
+];
+if(!S.weekMeals) S.weekMeals = {}; // { 'YYYY-Www': { Mon: {breakfast:id, lunch:id, snack:id, dinner:id}, ... } }
+
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const MEAL_SLOTS = ['Breakfast','Lunch','Snack','Dinner'];
+const SLOT_COLORS = {Breakfast:'#f0a05b',Lunch:'#00e5a0',Snack:'#5b6af0',Dinner:'#f05b9e'};
+const CAT_ICONS = {Breakfast:'🌅',Lunch:'☀️',Snack:'🍎',Dinner:'🌙'};
+
+function getWeekKey(dateStr) {
+  const d = dateStr ? new Date(dateStr) : new Date();
+  const jan1 = new Date(d.getFullYear(),0,1);
+  const week = Math.ceil(((d-jan1)/86400000 + jan1.getDay()+1)/7);
+  return `${d.getFullYear()}-W${String(week).padStart(2,'0')}`;
+}
+
+function getWeekDates(weekKey) {
+  const [year, w] = weekKey.split('-W').map(Number);
+  const jan1 = new Date(year,0,1);
+  const dayOfWeek = jan1.getDay()||7;
+  const firstMonday = new Date(jan1.getTime() - (dayOfWeek-1)*86400000 + (w-1)*7*86400000);
+  return DAYS.map((_,i)=>{
+    const d = new Date(firstMonday.getTime()+i*86400000);
+    return d.toISOString().split('T')[0];
+  });
+}
+
+function populateMealWeekSelect() {
+  const sel = document.getElementById('mealWeek');
+  if(!sel) return;
+  const opts = [];
+  for(let i=-1;i<=4;i++){
+    const d = new Date(); d.setDate(d.getDate()+i*7);
+    const key = getWeekKey(d.toISOString().split('T')[0]);
+    const dates = getWeekDates(key);
+    const label = `Week of ${new Date(dates[0]).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}`;
+    opts.push({key,label});
+  }
+  const unique = [...new Map(opts.map(o=>[o.key,o])).values()];
+  sel.innerHTML = unique.map(o=>`<option value="${o.key}">${o.label}</option>`).join('');
+  sel.value = getWeekKey(today());
+}
+
+function renderMealPlan() {
+  populateMealWeekSelect();
+  const week = document.getElementById('mealWeek')?.value || getWeekKey(today());
+  const plan = S.weekMeals[week] || {};
+  const dates = getWeekDates(week);
+
+  document.getElementById('meal-week-label').textContent = `${new Date(dates[0]).toLocaleDateString('en-IN',{day:'numeric',month:'short'})} – ${new Date(dates[6]).toLocaleDateString('en-IN',{day:'numeric',month:'short'})}`;
+
+  // KPIs
+  let totalCal=0, mealsPlanned=0;
+  DAYS.forEach((day,di)=>{
+    const dayPlan = plan[day]||{};
+    MEAL_SLOTS.forEach(slot=>{
+      const fid = dayPlan[slot];
+      if(fid){
+        const food = S.mealLibrary.find(f=>f.id===fid);
+        if(food){ totalCal+=food.cal; mealsPlanned++; }
+      }
+    });
+  });
+  const avgDailyCal = mealsPlanned>0 ? Math.round(totalCal/7) : 0;
+  document.getElementById('meal-kpis').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Meals planned</div><div class="kpi-value kpi-accent">${mealsPlanned}</div><div class="kpi-sub">this week</div></div>
+    <div class="kpi"><div class="kpi-label">Avg daily calories</div><div class="kpi-value kpi-orange">${avgDailyCal||'—'}</div><div class="kpi-sub">kcal/day</div></div>
+    <div class="kpi"><div class="kpi-label">Foods in library</div><div class="kpi-value kpi-purple">${S.mealLibrary.length}</div><div class="kpi-sub">saved foods</div></div>
+    <div class="kpi"><div class="kpi-label">Unique ingredients</div><div class="kpi-value" id="ingr-count">—</div><div class="kpi-sub">to buy</div></div>
+  `;
+
+  // Weekly table
+  const table = document.getElementById('meal-week-table');
+  let thead = `<thead><tr><th style="padding:0.6rem 0.75rem;text-align:left;font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border);min-width:90px;">Meal</th>`;
+  DAYS.forEach((day,i)=>{
+    const d = new Date(dates[i]);
+    const isToday = dates[i]===today();
+    thead+=`<th style="padding:0.6rem 0.5rem;text-align:center;font-size:0.75rem;border-bottom:1px solid var(--border);${isToday?'color:var(--accent);':'color:var(--text2);'}">
+      <div style="font-weight:600;">${day}</div>
+      <div style="font-size:0.65rem;color:var(--text3);font-family:var(--mono);">${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</div>
+    </th>`;
+  });
+  thead+=`</tr></thead>`;
+
+  let tbody='<tbody>';
+  MEAL_SLOTS.forEach(slot=>{
+    const color = SLOT_COLORS[slot];
+    const icon = CAT_ICONS[slot];
+    tbody+=`<tr>`;
+    tbody+=`<td style="padding:0.6rem 0.75rem;border-bottom:1px solid var(--border);font-size:0.78rem;font-weight:500;color:${color};white-space:nowrap;">${icon} ${slot}</td>`;
+    DAYS.forEach(day=>{
+      const fid = (plan[day]||{})[slot];
+      const food = fid ? S.mealLibrary.find(f=>f.id===fid) : null;
+      tbody+=`<td style="padding:0.4rem;border-bottom:1px solid var(--border);border-left:1px solid var(--border);text-align:center;vertical-align:top;min-width:110px;">
+        ${food
+          ? `<div style="background:${color}18;border:1px solid ${color}40;border-radius:6px;padding:0.35rem 0.4rem;font-size:0.72rem;color:var(--text);cursor:pointer;position:relative;" onclick="openMealSlotPicker('${week}','${day}','${slot}')">
+              <div style="font-weight:500;">${food.name}</div>
+              <div style="color:var(--text3);font-size:0.65rem;margin-top:2px;">${food.cal} kcal</div>
+              <div onclick="event.stopPropagation();removeMealSlot('${week}','${day}','${slot}')" style="position:absolute;top:2px;right:4px;color:var(--text3);font-size:0.65rem;cursor:pointer;">✕</div>
+            </div>`
+          : `<div onclick="openMealSlotPicker('${week}','${day}','${slot}')" style="border:1.5px dashed var(--border);border-radius:6px;padding:0.4rem;color:var(--text3);font-size:0.68rem;cursor:pointer;transition:border-color 0.15s;"
+              onmouseover="this.style.borderColor='${color}'" onmouseout="this.style.borderColor='var(--border)'">+ Add</div>`
+        }
+      </td>`;
+    });
+    tbody+=`</tr>`;
+  });
+
+  // Daily calorie row
+  tbody+=`<tr><td style="padding:0.5rem 0.75rem;font-size:0.68rem;color:var(--text3);">Total kcal</td>`;
+  DAYS.forEach(day=>{
+    const dayPlan=plan[day]||{};
+    const cal=MEAL_SLOTS.reduce((s,slot)=>{
+      const food=S.mealLibrary.find(f=>f.id===dayPlan[slot]);
+      return s+(food?food.cal:0);
+    },0);
+    tbody+=`<td style="padding:0.5rem 0.4rem;text-align:center;font-size:0.72rem;font-family:var(--mono);color:${cal>0?'var(--accent3)':'var(--text3)'};">${cal>0?cal+' kcal':'—'}</td>`;
+  });
+  tbody+=`</tr></tbody>`;
+  table.innerHTML=thead+tbody;
+
+  renderIngredients(week, plan);
+  renderFoodLibrary();
+}
+
+function openMealSlotPicker(week, day, slot) {
+  const filtered = S.mealLibrary.filter(f=>f.category===slot||true); // show all
+  const byCategory = {};
+  S.mealLibrary.forEach(f=>{ if(!byCategory[f.category]) byCategory[f.category]=[]; byCategory[f.category].push(f); });
+
+  openModal(`Pick ${slot} for ${day}`, `
+    <div style="font-size:0.75rem;color:var(--text3);margin-bottom:0.75rem;">Select from your food library or add a new food first.</div>
+    ${Object.entries(byCategory).map(([cat,foods])=>`
+      <div style="margin-bottom:0.75rem;">
+        <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:0.4rem;">${CAT_ICONS[cat]||'🍽'} ${cat}</div>
+        ${foods.map(f=>`
+          <div onclick="setMealSlot('${week}','${day}','${slot}',${f.id})" style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.65rem;border:1px solid var(--border);border-radius:var(--rs);margin-bottom:0.3rem;cursor:pointer;transition:border-color 0.15s;"
+            onmouseover="this.style.borderColor='var(--accent)';this.style.background='rgba(0,229,160,0.05)'" onmouseout="this.style.borderColor='var(--border)';this.style.background=''">
+            <span style="font-size:0.83rem;">${f.name}</span>
+            <span style="font-size:0.72rem;color:var(--text3);font-family:var(--mono);">${f.cal} kcal</span>
+          </div>`).join('')}
+      </div>`).join('')}
+    <button class="btn-ghost" style="width:100%;margin-top:0.5rem;" onclick="closeModal();openAddMealItem('${slot}')">+ Add new food item</button>
+  `, ()=>{});
+}
+
+function setMealSlot(week, day, slot, foodId) {
+  if(!S.weekMeals[week]) S.weekMeals[week]={};
+  if(!S.weekMeals[week][day]) S.weekMeals[week][day]={};
+  S.weekMeals[week][day][slot]=foodId;
+  save(); closeModal(); renderMealPlan();
+}
+
+function removeMealSlot(week, day, slot) {
+  if(S.weekMeals[week]&&S.weekMeals[week][day]) { delete S.weekMeals[week][day][slot]; save(); renderMealPlan(); }
+}
+
+function clearWeekMeals() {
+  const week=document.getElementById('mealWeek')?.value||getWeekKey(today());
+  S.weekMeals[week]={}; save(); renderMealPlan();
+}
+
+function renderIngredients(week, plan) {
+  // Aggregate all ingredients from planned meals
+  const ingMap = {};
+  DAYS.forEach(day=>{
+    const dayPlan=plan[day]||{};
+    MEAL_SLOTS.forEach(slot=>{
+      const food=S.mealLibrary.find(f=>f.id===dayPlan[slot]);
+      if(food&&food.ingredients){
+        food.ingredients.forEach(ing=>{
+          const key=ing.name.toLowerCase();
+          if(!ingMap[key]) ingMap[key]={name:ing.name,qty:[],checked:false};
+          ingMap[key].qty.push(`${ing.qty} (${day} ${slot})`);
+        });
+      }
+    });
+  });
+
+  const entries=Object.values(ingMap);
+  document.getElementById('ingr-count').textContent=entries.length||'—';
+
+  if(entries.length===0){
+    document.getElementById('ingredient-list').innerHTML='<div style="color:var(--text3);font-size:0.82rem;padding:0.5rem 0;">Plan your week to see ingredients here</div>';
+    return;
+  }
+
+  // Group by simple categories
+  document.getElementById('ingredient-list').innerHTML=`
+    <div style="font-size:0.72rem;color:var(--text3);margin-bottom:0.5rem;">${entries.length} unique ingredients for this week</div>
+    ${entries.map((ing,i)=>`
+      <div style="display:flex;align-items:center;gap:0.6rem;padding:0.45rem 0;border-bottom:1px solid var(--border);" id="ingr-${i}">
+        <input type="checkbox" style="accent-color:var(--accent);width:14px;height:14px;cursor:pointer;" onchange="this.parentElement.querySelector('.ingr-name').style.textDecoration=this.checked?'line-through':'none';this.parentElement.querySelector('.ingr-name').style.color=this.checked?'var(--text3)':'var(--text)'"/>
+        <span class="ingr-name" style="flex:1;font-size:0.82rem;">${ing.name}</span>
+        <span style="font-size:0.68rem;color:var(--text3);text-align:right;max-width:120px;">${[...new Set(ing.qty.map(q=>q.split(' (')[0]))].join(', ')}</span>
+      </div>`).join('')}
+  `;
+}
+
+function copyIngredients() {
+  const items = document.querySelectorAll('#ingredient-list .ingr-name');
+  const text = [...items].map(el=>el.textContent).join('\n');
+  navigator.clipboard.writeText(text).then(()=>showToast('Ingredient list copied!'));
+}
+
+function renderFoodLibrary() {
+  const byCategory={};
+  S.mealLibrary.forEach(f=>{ if(!byCategory[f.category]) byCategory[f.category]=[]; byCategory[f.category].push(f); });
+  document.getElementById('food-library').innerHTML=Object.entries(byCategory).map(([cat,foods])=>`
+    <div style="margin-bottom:0.75rem;">
+      <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:0.35rem;">${CAT_ICONS[cat]||'🍽'} ${cat}</div>
+      ${foods.map(f=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.45rem 0.5rem;background:var(--surface2);border-radius:var(--rs);margin-bottom:0.3rem;font-size:0.8rem;">
+          <div>
+            <span style="color:var(--text);">${f.name}</span>
+            <span style="color:var(--text3);font-size:0.68rem;margin-left:0.4rem;">${(f.ingredients||[]).length} ingredients</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <span style="font-family:var(--mono);font-size:0.72rem;color:var(--accent3);">${f.cal} kcal</span>
+            <button class="del-btn" onclick="delFoodItem(${f.id})">✕</button>
+          </div>
+        </div>`).join('')}
+    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;">No food items saved yet</div>';
+}
+
+function openAddMealItem(defaultCat) {
+  openModal('Add food to library', `
+    <div class="form-group"><div class="form-label">Food name</div><input type="text" class="form-input" id="food-name" placeholder="e.g. Chicken Rice Bowl"/></div>
+    <div class="form-group"><div class="form-label">Meal category</div>
+      <select class="form-select" id="food-cat">
+        ${MEAL_SLOTS.map(s=>`<option value="${s}" ${s===(defaultCat||'Lunch')?'selected':''}>${CAT_ICONS[s]} ${s}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group"><div class="form-label">Calories (approx kcal)</div><input type="number" class="form-input" id="food-cal" placeholder="450"/></div>
+    <div class="form-group">
+      <div class="form-label">Ingredients <span style="color:var(--text3);font-size:0.7rem;">(one per line: Name, Quantity)</span></div>
+      <textarea class="form-textarea" id="food-ingr" placeholder="Rice, 100g&#10;Chicken, 150g&#10;Garlic, 2 cloves&#10;Oil, 1 tbsp" style="min-height:120px;font-size:0.8rem;"></textarea>
+    </div>
+  `, ()=>{
+    const name=document.getElementById('food-name').value.trim();
+    const cal=parseInt(document.getElementById('food-cal').value)||0;
+    if(!name) return;
+    const ingrRaw=document.getElementById('food-ingr').value.trim().split('\n').filter(Boolean);
+    const ingredients=ingrRaw.map(line=>{
+      const parts=line.split(',').map(s=>s.trim());
+      return {name:parts[0]||line, qty:parts[1]||''};
+    });
+    S.mealLibrary.push({id:uid(),name,category:document.getElementById('food-cat').value,cal,ingredients});
+    save(); renderMealPlan();
+  });
+}
+
+function delFoodItem(id) { S.mealLibrary=S.mealLibrary.filter(f=>f.id!==id); save(); renderMealPlan(); }
+document.getElementById('mealWeek')?.addEventListener('change', renderMealPlan);
+
+// ═══════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════
 function init() {
+  if(!S.mealLibrary) S.mealLibrary = [];
+  if(!S.weekMeals) S.weekMeals = {};
   populateSelects();
-  document.getElementById('phaseIntern').classList.toggle('active',S.phase==='intern');
-  document.getElementById('phaseJob').classList.toggle('active',S.phase==='job');
+  populateMealWeekSelect();
+  document.getElementById('phaseIntern') && document.getElementById('phaseIntern').classList.toggle('active',true);
   renderDashboard();
-  window.addEventListener('resize',()=>{ const p=currentPage(); if(p==='investments')renderProjection(); if(p==='habits')renderHabits(); });
+  window.addEventListener('resize',()=>{ const p=currentPage(); if(p==='habits')renderHabits(); });
 }
 init();
 </script>
