@@ -1,215 +1,1947 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FinFlow — Personal Finance Tracker</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LifeOS — Akhil's Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f14;
+  --surface: #13161e;
+  --surface2: #1a1e28;
+  --surface3: #20253200;
+  --border: #232736;
+  --accent: #00e5a0;
+  --accent2: #5b6af0;
+  --accent3: #f0a05b;
+  --accent4: #f05b9e;
+  --danger: #f05b5b;
+  --text: #e8eaf0;
+  --text2: #8890a8;
+  --text3: #545d78;
+  --font: 'Space Grotesk', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --serif: 'Playfair Display', serif;
+  --r: 12px;
+  --rs: 8px;
+  --sw: 230px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:15px;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex;min-height:100vh;overflow-x:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sw);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:1.25rem 0.875rem;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;}
+.logo{display:flex;align-items:center;gap:0.6rem;padding:0 0.5rem 1.25rem;border-bottom:1px solid var(--border);margin-bottom:1rem;}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:grid;place-items:center;font-size:1rem;font-weight:700;color:#000;}
+.logo-text{font-size:1.1rem;font-weight:700;letter-spacing:-0.02em;}
+.logo-sub{font-size:0.65rem;color:var(--text3);margin-top:1px;}
+.nav{display:flex;flex-direction:column;gap:2px;flex:1;}
+.nav-section{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);padding:0.75rem 0.5rem 0.3rem;font-weight:600;}
+.nav-item{display:flex;align-items:center;gap:0.55rem;padding:0.55rem 0.65rem;border-radius:var(--rs);color:var(--text2);text-decoration:none;font-size:0.82rem;font-weight:500;cursor:pointer;border:none;background:none;width:100%;transition:all 0.15s;}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:rgba(0,229,160,0.1);color:var(--accent);}
+.nav-icon{font-size:0.85rem;width:16px;text-align:center;}
+.sidebar-bottom{margin-top:auto;padding-top:1rem;border-top:1px solid var(--border);}
+.phase-label{font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;padding:0 0.25rem;}
+.phase-toggle{display:flex;gap:0.35rem;}
+.phase-btn{flex:1;padding:0.4rem 0.2rem;border-radius:var(--rs);border:1px solid var(--border);background:transparent;color:var(--text2);font-family:var(--font);font-size:0.68rem;font-weight:500;cursor:pointer;transition:all 0.15s;}
+.phase-btn.active{background:var(--accent);border-color:var(--accent);color:#000;}
+
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;padding:2rem 2.25rem;max-width:calc(100vw - var(--sw));}
+.page{display:none;}
+.page.active{display:block;}
+.page-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.75rem;}
+.eyebrow{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent);font-weight:600;margin-bottom:0.25rem;}
+h1{font-size:1.75rem;font-weight:700;letter-spacing:-0.03em;}
+.btn-primary{padding:0.5rem 1.1rem;border-radius:var(--rs);border:none;background:var(--accent);color:#000;font-family:var(--font);font-size:0.82rem;font-weight:600;cursor:pointer;transition:opacity 0.15s;}
+.btn-primary:hover{opacity:0.85;}
+.btn-sec{padding:0.5rem 1.1rem;border-radius:var(--rs);border:1px solid var(--border);background:transparent;color:var(--text2);font-family:var(--font);font-size:0.82rem;cursor:pointer;}
+.btn-ghost{padding:0.35rem 0.75rem;border-radius:var(--rs);border:1px solid var(--border);background:transparent;color:var(--text2);font-family:var(--font);font-size:0.75rem;cursor:pointer;transition:all 0.15s;}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.del-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:0.85rem;transition:color 0.15s;}
+.del-btn:hover{color:var(--danger);}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.35rem;}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem;}
+.card-title{font-size:0.9rem;font-weight:600;}
+.card-badge{font-size:0.65rem;font-family:var(--mono);padding:0.2rem 0.55rem;background:rgba(0,229,160,0.08);color:var(--accent);border-radius:100px;border:1px solid rgba(0,229,160,0.2);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin-bottom:1.1rem;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.1rem;margin-bottom:1.1rem;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.1rem;}
+.full{width:100%;margin-bottom:1.1rem;}
+
+/* KPI */
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.25rem;}
+.kpi-label{font-size:0.68rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.4rem;}
+.kpi-value{font-size:1.4rem;font-weight:700;font-family:var(--mono);letter-spacing:-0.02em;}
+.kpi-sub{font-size:0.7rem;color:var(--text3);margin-top:0.2rem;}
+.kpi-accent{color:var(--accent);}
+.kpi-danger{color:var(--danger);}
+.kpi-warn{color:var(--accent3);}
+.kpi-purple{color:var(--accent2);}
+.kpi-pink{color:var(--accent4);}
+
+/* FORM */
+.form-group{display:flex;flex-direction:column;gap:0.35rem;}
+.form-label{font-size:0.75rem;color:var(--text2);}
+.form-input,.form-select,.form-textarea{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);padding:0.55rem 0.7rem;font-family:var(--font);font-size:0.83rem;outline:none;transition:border-color 0.15s;width:100%;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent);}
+.form-textarea{resize:vertical;min-height:80px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;place-items:center;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:grid;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);width:90%;max-width:500px;max-height:90vh;overflow-y:auto;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.35rem;border-bottom:1px solid var(--border);font-weight:600;position:sticky;top:0;background:var(--surface);}
+.modal-close{background:none;border:none;color:var(--text2);font-size:1rem;cursor:pointer;}
+.modal-body{padding:1.35rem;display:flex;flex-direction:column;gap:0.9rem;}
+.modal-footer{display:flex;justify-content:flex-end;gap:0.65rem;padding:0.9rem 1.35rem;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--surface);}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:0.83rem;}
+.data-table th{text-align:left;padding:0.55rem 0.7rem;font-size:0.67rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);border-bottom:1px solid var(--border);}
+.data-table td{padding:0.75rem 0.7rem;border-bottom:1px solid var(--border);color:var(--text2);}
+.data-table td:first-child{color:var(--text);font-weight:500;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:hover td{background:var(--surface2);}
+
+/* MONTH SELECT */
+.month-select{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--rs);padding:0.4rem 0.65rem;font-family:var(--font);font-size:0.78rem;cursor:pointer;}
+
+/* TYPE BADGE */
+.badge{display:inline-block;padding:0.18rem 0.5rem;border-radius:100px;font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;}
+.badge-green{background:rgba(0,229,160,0.12);color:var(--accent);}
+.badge-blue{background:rgba(91,106,240,0.12);color:var(--accent2);}
+.badge-orange{background:rgba(240,160,91,0.12);color:var(--accent3);}
+.badge-pink{background:rgba(240,91,158,0.12);color:var(--accent4);}
+.badge-red{background:rgba(240,91,91,0.12);color:var(--danger);}
+
+/* PROGRESS BAR */
+.prog-wrap{height:6px;background:var(--surface2);border-radius:100px;overflow:hidden;}
+.prog-bar{height:100%;border-radius:100px;transition:width 0.6s ease;}
+
+/* CHECKBOX */
+.check-item{display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0;border-bottom:1px solid var(--border);font-size:0.83rem;}
+.check-item:last-child{border-bottom:none;}
+.check-item input[type=checkbox]{accent-color:var(--accent);width:15px;height:15px;cursor:pointer;}
+.check-item.done span{text-decoration:line-through;color:var(--text3);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:100px;}
+
+/* STAR/HEART/CIRCLE RATING */
+.rating-row{display:flex;align-items:center;gap:0.5rem;margin:0.4rem 0;}
+.rating-label{font-size:0.8rem;color:var(--text2);width:70px;}
+.rating-icons{display:flex;gap:4px;}
+.rate-icon{font-size:1.1rem;cursor:pointer;opacity:0.3;transition:opacity 0.15s;}
+.rate-icon.active{opacity:1;}
+
+/* HABIT GRID */
+.habit-grid-wrap{overflow-x:auto;}
+.habit-grid{border-collapse:collapse;font-size:0.72rem;min-width:800px;}
+.habit-grid th{padding:0.3rem 0.4rem;color:var(--text3);font-weight:500;text-align:center;border-bottom:1px solid var(--border);}
+.habit-grid th.habit-name-col{text-align:left;min-width:140px;}
+.habit-grid td{padding:0.25rem 0.3rem;text-align:center;border-bottom:1px solid var(--border);}
+.habit-grid td.habit-name{text-align:left;color:var(--text2);font-size:0.78rem;padding-left:0;}
+.habit-check{width:18px;height:18px;border:1.5px solid var(--border);border-radius:4px;cursor:pointer;background:transparent;display:inline-flex;align-items:center;justify-content:center;transition:all 0.15s;font-size:0.65rem;color:transparent;}
+.habit-check.done{background:var(--accent);border-color:var(--accent);color:#000;}
+.habit-pct{font-family:var(--mono);font-size:0.68rem;}
+.habit-color-0{color:#00e5a0;}
+.habit-color-1{color:#5b6af0;}
+.habit-color-2{color:#f0a05b;}
+.habit-color-3{color:#f05b9e;}
+.habit-color-4{color:#a0d4f0;}
+.habit-color-5{color:#e0a0f0;}
+.habit-color-6{color:#f0e05b;}
+.habit-color-7{color:#f05b5b;}
+
+/* MOOD DOT GRID */
+.mood-grid{display:grid;grid-template-columns:repeat(31,1fr);gap:3px;margin:0.75rem 0;}
+.mood-dot{width:100%;aspect-ratio:1;border-radius:3px;cursor:pointer;border:1px solid var(--border);transition:all 0.15s;}
+.mood-dot:hover{transform:scale(1.15);}
+.mood-0{background:var(--surface2);}
+.mood-1{background:#f05b5b;}
+.mood-2{background:#f0a05b;}
+.mood-3{background:#f0e05b;}
+.mood-4{background:#00e5a0;}
+.mood-5{background:#5b6af0;}
+
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-header{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;}
+.cal-day-label{text-align:center;font-size:0.65rem;color:var(--text3);padding:0.25rem 0;}
+.cal-day{background:var(--surface2);border-radius:var(--rs);padding:0.4rem;min-height:60px;position:relative;border:1px solid var(--border);cursor:pointer;transition:border-color 0.15s;}
+.cal-day:hover{border-color:var(--accent);}
+.cal-day.today{border-color:var(--accent);}
+.cal-day.has-event{border-color:var(--accent3);}
+.cal-num{font-size:0.7rem;color:var(--text3);font-family:var(--mono);}
+.cal-event{font-size:0.6rem;background:rgba(0,229,160,0.15);color:var(--accent);border-radius:3px;padding:1px 4px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cal-event.bday{background:rgba(240,160,91,0.15);color:var(--accent3);}
+.cal-day.empty{background:transparent;border-color:transparent;cursor:default;}
+
+/* SKINCARE */
+.skin-step{display:flex;align-items:center;gap:0.65rem;padding:0.6rem 0;border-bottom:1px solid var(--border);}
+.skin-step:last-child{border-bottom:none;}
+.skin-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.skin-name{flex:1;font-size:0.83rem;color:var(--text);}
+.skin-time{font-size:0.7rem;color:var(--text3);}
+
+/* SELFIE TIMELINE */
+.selfie-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.75rem;}
+.selfie-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;cursor:pointer;}
+.selfie-img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
+.selfie-img-placeholder{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--text3);}
+.selfie-date{font-size:0.65rem;color:var(--text3);padding:0.4rem 0.5rem;text-align:center;font-family:var(--mono);}
+
+/* DAILY SHEET */
+.daily-sheet{max-width:900px;}
+.ds-affirmation{font-family:var(--serif);font-size:1.1rem;font-style:italic;color:var(--text);background:var(--surface2);border-left:3px solid var(--accent);padding:0.75rem 1rem;border-radius:0 var(--rs) var(--rs) 0;margin-bottom:1rem;}
+.ds-priorities{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;}
+.ds-priority-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:0.75rem;}
+.ds-priority-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;font-weight:600;}
+.ds-priority-title.work{color:var(--accent3);}
+.ds-priority-title.family{color:var(--accent2);}
+.ds-priority-title.self{color:var(--accent4);}
+.ds-priority-item{display:flex;align-items:flex-start;gap:0.4rem;margin:0.3rem 0;font-size:0.8rem;color:var(--text2);}
+.ds-priority-item input[type=checkbox]{accent-color:var(--accent);margin-top:2px;}
+
+/* TECH LEARNING */
+.topic-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:1rem;margin-bottom:0.65rem;}
+.topic-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;}
+.topic-name{font-size:0.88rem;font-weight:600;}
+.topic-month{font-size:0.65rem;color:var(--text3);font-family:var(--mono);}
+.topic-pct{font-size:0.78rem;font-family:var(--mono);color:var(--accent);}
+
+/* LONG TERM GOALS */
+.ltg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;position:relative;overflow:hidden;}
+.ltg-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.ltg-green::before{background:var(--accent);}
+.ltg-blue::before{background:var(--accent2);}
+.ltg-orange::before{background:var(--accent3);}
+.ltg-pink::before{background:var(--accent4);}
+.ltg-name{font-weight:600;margin-bottom:0.25rem;}
+.ltg-target{font-size:0.75rem;color:var(--text3);margin-bottom:0.9rem;}
+.ltg-meta{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text3);margin-top:0.5rem;}
+
+/* BUDGET */
+.budget-section-title{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);padding:0.6rem 0 0.3rem;font-weight:600;border-top:1px solid var(--border);margin-top:0.5rem;}
+.budget-row{display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0;border-bottom:1px solid rgba(35,39,54,0.5);}
+.budget-row:last-child{border-bottom:none;}
+.budget-cat{font-size:0.82rem;color:var(--text2);}
+.budget-cols{display:flex;gap:1rem;align-items:center;}
+.budget-input{width:90px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);padding:0.3rem 0.5rem;font-family:var(--mono);font-size:0.78rem;text-align:right;}
+.budget-actual{width:90px;font-family:var(--mono);font-size:0.82rem;text-align:right;}
+.budget-diff{width:70px;font-family:var(--mono);font-size:0.75rem;text-align:right;}
+.diff-ok{color:var(--accent);}
+.diff-over{color:var(--danger);}
+
+/* RING */
+.ring-wrap{display:flex;align-items:center;justify-content:center;position:relative;}
+.ring-text{position:absolute;text-align:center;}
+.ring-pct{font-size:1rem;font-weight:700;font-family:var(--mono);}
+.ring-sub{font-size:0.6rem;color:var(--text3);}
+
+/* SHOPPING LIST */
+.shop-item{display:flex;align-items:center;gap:0.6rem;padding:0.55rem 0;border-bottom:1px solid var(--border);}
+.shop-item:last-child{border-bottom:none;}
+.shop-check{accent-color:var(--accent);width:15px;height:15px;cursor:pointer;}
+.shop-name{flex:1;font-size:0.83rem;}
+.shop-name.bought{text-decoration:line-through;color:var(--text3);}
+.shop-cat{font-size:0.65rem;color:var(--text3);}
+.shop-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:0.8rem;}
+.shop-del:hover{color:var(--danger);}
+
+/* HEALTH */
+.water-dots{display:flex;gap:6px;flex-wrap:wrap;margin:0.5rem 0;}
+.water-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.8rem;transition:all 0.15s;}
+.water-dot.filled{background:rgba(91,106,240,0.25);border-color:var(--accent2);color:var(--accent2);}
+
+/* QUICK ADD */
+.quick-add{display:flex;gap:0.5rem;align-items:center;margin-bottom:1rem;}
+.quick-add input{flex:1;}
+
+/* WEEK RINGS ROW */
+.week-rings{display:grid;grid-template-columns:repeat(5,1fr);gap:0.75rem;margin-bottom:1rem;}
+.week-ring-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:0.9rem;text-align:center;}
+.week-ring-label{font-size:0.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.5rem;}
+
+@media(max-width:900px){
+  .sidebar{width:56px;}
+  .logo-text,.logo-sub,.nav-item span:not(.nav-icon),.phase-label,.phase-toggle,.sidebar-bottom .phase-label{display:none;}
+  .nav-item{justify-content:center;padding:0.65rem;}
+  .main{margin-left:56px;padding:1.25rem 1rem;}
+  .grid2,.grid3,.grid4{grid-template-columns:1fr;}
+}
+</style>
 </head>
 <body>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="logo">
-      <span class="logo-icon">₹</span>
-      <span class="logo-text">FinFlow</span>
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">L</div>
+    <div><div class="logo-text">LifeOS</div><div class="logo-sub">Akhil's Dashboard</div></div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">Overview</div>
+    <button class="nav-item active" data-page="dashboard"><span class="nav-icon">◈</span><span>Dashboard</span></button>
+    <button class="nav-item" data-page="daily"><span class="nav-icon">☀</span><span>Daily Sheet</span></button>
+
+    <div class="nav-section">Monthly</div>
+    <button class="nav-item" data-page="monthglance"><span class="nav-icon">📅</span><span>Month at a Glance</span></button>
+    <button class="nav-item" data-page="monthplan"><span class="nav-icon">🎯</span><span>Month Planner</span></button>
+    <button class="nav-item" data-page="habits"><span class="nav-icon">✓</span><span>Habit Tracker</span></button>
+    <button class="nav-item" data-page="mood"><span class="nav-icon">◉</span><span>Mood Tracker</span></button>
+
+    <div class="nav-section">Wellness</div>
+    <button class="nav-item" data-page="skincare"><span class="nav-icon">✦</span><span>Skincare</span></button>
+    <button class="nav-item" data-page="health"><span class="nav-icon">♥</span><span>Health & Fitness</span></button>
+
+    <div class="nav-section">Growth</div>
+    <button class="nav-item" data-page="techlearn"><span class="nav-icon">⚡</span><span>Tech Learning</span></button>
+    <button class="nav-item" data-page="longgoals"><span class="nav-icon">◎</span><span>Long Term Goals</span></button>
+
+    <div class="nav-section">Finance</div>
+    <button class="nav-item" data-page="budget"><span class="nav-icon">₹</span><span>Budget Tracker</span></button>
+    <button class="nav-item" data-page="investments"><span class="nav-icon">◈</span><span>Investments</span></button>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="phase-label">Current Phase</div>
+    <div class="phase-toggle">
+      <button class="phase-btn active" id="phaseIntern">Intern</button>
+      <button class="phase-btn" id="phaseJob">FTE</button>
     </div>
-    <nav class="nav">
-      <a href="#" class="nav-item active" data-page="dashboard">
-        <span class="nav-icon">◈</span> Dashboard
-      </a>
-      <a href="#" class="nav-item" data-page="budget">
-        <span class="nav-icon">◉</span> Budget Plan
-      </a>
-      <a href="#" class="nav-item" data-page="investments">
-        <span class="nav-icon">◈</span> Investments
-      </a>
-      <a href="#" class="nav-item" data-page="expenses">
-        <span class="nav-icon">◎</span> Monthly Expenses
-      </a>
-      <a href="#" class="nav-item" data-page="goals">
-        <span class="nav-icon">◉</span> Goals
-      </a>
-    </nav>
-    <div class="sidebar-phase">
-      <div class="phase-label">Current Phase</div>
-      <div class="phase-toggle">
-        <button class="phase-btn active" id="phaseIntern">Internship</button>
-        <button class="phase-btn" id="phaseJob">Post-Absorption</button>
+  </div>
+</aside>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<section class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div><div class="eyebrow">Overview</div><h1>Good morning, Akhil 👋</h1></div>
+    <select id="dashMonth" class="month-select"></select>
+  </div>
+  <div class="grid4" id="dash-kpis"></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Today's habits</span><span class="card-badge" id="dash-habit-pct">0%</span></div>
+      <div id="dash-habits-today"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Monthly mood</span></div>
+      <div id="dash-mood-mini"></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Budget snapshot</span></div>
+      <div id="dash-budget-snap"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Tech learning</span><span class="card-badge">Jul–Sep</span></div>
+      <div id="dash-tech-snap"></div>
+    </div>
+  </div>
+</section>
+
+<!-- DAILY SHEET -->
+<section class="page" id="page-daily">
+  <div class="page-header">
+    <div><div class="eyebrow">Daily</div><h1>Daily Sheet</h1></div>
+    <div style="display:flex;gap:0.5rem;align-items:center;">
+      <input type="date" id="dailyDate" class="month-select"/>
+      <button class="btn-primary" onclick="saveDaily()">Save day</button>
+    </div>
+  </div>
+  <div class="daily-sheet">
+    <!-- Affirmation -->
+    <div class="card full" style="margin-bottom:1rem;">
+      <div class="card-header"><span class="card-title">Daily affirmation</span></div>
+      <input type="text" class="form-input" id="ds-affirmation" placeholder="I am capable, consistent, and growing every day..."/>
+    </div>
+
+    <!-- Priorities -->
+    <div class="ds-priorities" style="margin-bottom:1rem;">
+      <div class="card">
+        <div class="ds-priority-title work">Work priorities</div>
+        <div id="work-priorities"></div>
+        <div style="margin-top:0.5rem;">
+          <input type="text" class="form-input" id="work-prio-input" placeholder="Add priority..." style="font-size:0.78rem;padding:0.35rem 0.6rem;"/>
+          <button class="btn-ghost" style="margin-top:0.35rem;width:100%;" onclick="addPriority('work')">+ Add</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ds-priority-title family">Family priorities</div>
+        <div id="family-priorities"></div>
+        <div style="margin-top:0.5rem;">
+          <input type="text" class="form-input" id="family-prio-input" placeholder="Add priority..." style="font-size:0.78rem;padding:0.35rem 0.6rem;"/>
+          <button class="btn-ghost" style="margin-top:0.35rem;width:100%;" onclick="addPriority('family')">+ Add</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ds-priority-title self">Self-care priorities</div>
+        <div id="self-priorities"></div>
+        <div style="margin-top:0.5rem;">
+          <input type="text" class="form-input" id="self-prio-input" placeholder="Add priority..." style="font-size:0.78rem;padding:0.35rem 0.6rem;"/>
+          <button class="btn-ghost" style="margin-top:0.35rem;width:100%;" onclick="addPriority('self')">+ Add</button>
+        </div>
       </div>
     </div>
-  </aside>
 
-  <!-- MAIN -->
-  <main class="main">
-
-    <!-- DASHBOARD PAGE -->
-    <section class="page active" id="page-dashboard">
-      <header class="page-header">
-        <div>
-          <div class="eyebrow">Overview</div>
-          <h1>Dashboard</h1>
-        </div>
-        <div class="header-month">
-          <select id="dashMonth" class="month-select"></select>
-        </div>
-      </header>
-
-      <div class="kpi-row" id="kpiRow"></div>
-
-      <div class="two-col">
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">Monthly Cashflow</span>
-            <span class="card-badge">This Month</span>
-          </div>
-          <div class="cashflow-bars" id="cashflowBars"></div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">Spend Breakdown</span>
-          </div>
-          <div class="donut-wrap">
-            <svg id="donutChart" viewBox="0 0 200 200" width="180" height="180"></svg>
-            <div class="donut-legend" id="donutLegend"></div>
-          </div>
-        </div>
+    <div class="grid2" style="margin-bottom:1rem;">
+      <!-- Grateful + Highlights -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">I'm grateful for</span></div>
+        <textarea class="form-textarea" id="ds-grateful" placeholder="Three things you're grateful for today..."></textarea>
       </div>
-
-      <div class="card full-width">
-        <div class="card-header">
-          <span class="card-title">Investment Growth Projection</span>
-          <span class="card-badge">11% p.a.</span>
-        </div>
-        <div class="projection-chart" id="projectionChart"></div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Highlights of the day</span></div>
+        <textarea class="form-textarea" id="ds-highlights" placeholder="What made today memorable?"></textarea>
       </div>
-    </section>
+    </div>
 
-    <!-- BUDGET PAGE -->
-    <section class="page" id="page-budget">
-      <header class="page-header">
-        <div>
-          <div class="eyebrow">Planning</div>
-          <h1>Budget Plan</h1>
-        </div>
-      </header>
-
-      <div class="phase-cards" id="budgetPhaseCards"></div>
-
-      <div class="card full-width" style="margin-top:1.5rem">
-        <div class="card-header">
-          <span class="card-title">Allocation Editor</span>
-          <span class="card-badge">Drag to adjust</span>
-        </div>
-        <div class="alloc-editor" id="allocEditor"></div>
+    <div class="grid2" style="margin-bottom:1rem;">
+      <div class="card">
+        <div class="card-header"><span class="card-title">How could I have made today better?</span></div>
+        <textarea class="form-textarea" id="ds-better" placeholder="Reflect honestly..."></textarea>
       </div>
-    </section>
-
-    <!-- INVESTMENTS PAGE -->
-    <section class="page" id="page-investments">
-      <header class="page-header">
-        <div>
-          <div class="eyebrow">Portfolio</div>
-          <h1>Investments</h1>
-        </div>
-        <button class="btn-primary" id="addInvestmentBtn">+ Add</button>
-      </header>
-
-      <div class="kpi-row" id="investKpiRow"></div>
-
-      <div class="card full-width">
-        <div class="card-header">
-          <span class="card-title">Holdings</span>
-        </div>
-        <table class="data-table" id="investTable">
-          <thead>
-            <tr>
-              <th>Name</th><th>Type</th><th>Monthly SIP/Buy</th><th>Units/Value</th><th>Returns</th><th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="investBody"></tbody>
-        </table>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Thoughts · Feelings · Doodles</span></div>
+        <textarea class="form-textarea" id="ds-thoughts" placeholder="Stream of consciousness..."></textarea>
       </div>
+    </div>
 
-      <div class="card full-width" style="margin-top:1.5rem">
-        <div class="card-header">
-          <span class="card-title">EPF Auto-Tracker</span>
-          <span class="card-badge">Company Benefit</span>
-        </div>
-        <div class="epf-info" id="epfInfo"></div>
+    <div class="grid2" style="margin-bottom:1rem;">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Notes</span></div>
+        <textarea class="form-textarea" id="ds-notes" placeholder="Anything else..."></textarea>
       </div>
-    </section>
-
-    <!-- EXPENSES PAGE -->
-    <section class="page" id="page-expenses">
-      <header class="page-header">
-        <div>
-          <div class="eyebrow">Tracking</div>
-          <h1>Monthly Expenses</h1>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Rate your day</span></div>
+        <div class="rating-row">
+          <span class="rating-label">Work</span>
+          <div class="rating-icons" id="rate-work"></div>
         </div>
-        <div style="display:flex;gap:0.75rem;align-items:center">
-          <select id="expMonth" class="month-select"></select>
-          <button class="btn-primary" id="addExpenseBtn">+ Add Expense</button>
+        <div class="rating-row">
+          <span class="rating-label">Family</span>
+          <div class="rating-icons" id="rate-family"></div>
         </div>
-      </header>
-
-      <div class="kpi-row" id="expKpiRow"></div>
-
-      <div class="two-col">
-        <div class="card">
-          <div class="card-header"><span class="card-title">Fixed Expenses</span></div>
-          <div class="fixed-list" id="fixedList"></div>
+        <div class="rating-row">
+          <span class="rating-label">Self-care</span>
+          <div class="rating-icons" id="rate-self"></div>
         </div>
-        <div class="card">
-          <div class="card-header"><span class="card-title">Variable Expenses</span></div>
-          <div class="var-list" id="varList"></div>
+        <div style="margin-top:1rem;">
+          <div class="form-label" style="margin-bottom:0.35rem;">Overall mood today</div>
+          <div style="display:flex;gap:0.5rem;" id="daily-mood-pick"></div>
         </div>
-      </div>
-
-      <div class="card full-width" style="margin-top:1.5rem">
-        <div class="card-header">
-          <span class="card-title">All Transactions</span>
-        </div>
-        <table class="data-table">
-          <thead>
-            <tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th>Action</th></tr>
-          </thead>
-          <tbody id="expBody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- GOALS PAGE -->
-    <section class="page" id="page-goals">
-      <header class="page-header">
-        <div>
-          <div class="eyebrow">Planning</div>
-          <h1>Financial Goals</h1>
-        </div>
-        <button class="btn-primary" id="addGoalBtn">+ Add Goal</button>
-      </header>
-      <div class="goals-grid" id="goalsGrid"></div>
-    </section>
-
-  </main>
-
-  <!-- MODALS -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal" id="modal">
-      <div class="modal-header">
-        <span id="modalTitle">Add Item</span>
-        <button class="modal-close" id="modalClose">✕</button>
-      </div>
-      <div class="modal-body" id="modalBody"></div>
-      <div class="modal-footer">
-        <button class="btn-secondary" id="modalCancel">Cancel</button>
-        <button class="btn-primary" id="modalSave">Save</button>
       </div>
     </div>
   </div>
+</section>
 
-  <script src="app.js"></script>
+<!-- MONTH AT A GLANCE -->
+<section class="page" id="page-monthglance">
+  <div class="page-header">
+    <div><div class="eyebrow">Monthly</div><h1>Month at a Glance</h1></div>
+    <div style="display:flex;gap:0.5rem;">
+      <select id="calMonth" class="month-select"></select>
+      <button class="btn-primary" onclick="openAddEvent()">+ Event</button>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card" style="grid-column:1/2;">
+      <div class="card-header"><span class="card-title">Calendar</span></div>
+      <div class="cal-header" id="cal-header"></div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Birthdays 🎂</span><button class="btn-ghost" onclick="openAddBday()">+ Add</button></div>
+        <div id="bday-list"></div>
+      </div>
+      <div class="card" style="flex:1;">
+        <div class="card-header"><span class="card-title">Notes</span></div>
+        <textarea class="form-textarea" id="cal-notes" placeholder="Important notes for this month..." style="min-height:120px;"></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MONTH PLANNER -->
+<section class="page" id="page-monthplan">
+  <div class="page-header">
+    <div><div class="eyebrow">Monthly</div><h1>Month Planner</h1></div>
+    <select id="planMonth" class="month-select"></select>
+  </div>
+  <div class="card full" style="margin-bottom:1rem;">
+    <div class="card-header"><span class="card-title">This month's motto</span></div>
+    <input type="text" class="form-input" id="month-motto" placeholder="e.g. Discipline is freedom. Focus on V93K and health." style="font-family:var(--serif);font-style:italic;font-size:1rem;"/>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Goals for the month</span></div>
+      <div id="month-goals-list"></div>
+      <div class="quick-add" style="margin-top:0.75rem;">
+        <input type="text" class="form-input" id="month-goal-input" placeholder="Add a goal..."/>
+        <button class="btn-primary" onclick="addMonthGoal()">+</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">To-do list</span></div>
+      <div id="month-todo-list"></div>
+      <div class="quick-add" style="margin-top:0.75rem;">
+        <input type="text" class="form-input" id="month-todo-input" placeholder="Add a task..."/>
+        <button class="btn-primary" onclick="addMonthTodo()">+</button>
+      </div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Important dates & appointments</span></div>
+      <div id="month-dates-list"></div>
+      <div class="quick-add" style="margin-top:0.75rem;flex-direction:column;gap:0.4rem;">
+        <input type="text" class="form-input" id="month-date-label" placeholder="Label..."/>
+        <input type="date" class="form-input" id="month-date-val"/>
+        <button class="btn-primary" onclick="addMonthDate()">+ Add date</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Shopping list</span></div>
+      <div id="shopping-list"></div>
+      <div class="quick-add" style="margin-top:0.75rem;">
+        <input type="text" class="form-input" id="shop-input" placeholder="Add item..."/>
+        <button class="btn-primary" onclick="addShopItem()">+</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HABIT TRACKER -->
+<section class="page" id="page-habits">
+  <div class="page-header">
+    <div><div class="eyebrow">Monthly</div><h1>Habit Tracker</h1></div>
+    <div style="display:flex;gap:0.5rem;">
+      <select id="habitMonth" class="month-select"></select>
+      <button class="btn-primary" onclick="openAddHabit()">+ Habit</button>
+    </div>
+  </div>
+  <!-- Week rings -->
+  <div class="week-rings" id="week-rings"></div>
+  <!-- Grid -->
+  <div class="card full">
+    <div class="card-header"><span class="card-title">Daily tracking</span><span class="card-badge" id="habit-total-pct">0% this month</span></div>
+    <div class="habit-grid-wrap">
+      <table class="habit-grid" id="habit-table"></table>
+    </div>
+  </div>
+  <!-- Analysis -->
+  <div class="card full" style="margin-top:1rem;">
+    <div class="card-header"><span class="card-title">Analysis</span></div>
+    <div id="habit-analysis"></div>
+  </div>
+  <!-- Progress chart -->
+  <div class="card full" style="margin-top:1rem;">
+    <div class="card-header"><span class="card-title">Monthly progress trend</span></div>
+    <div id="habit-chart" style="height:120px;"></div>
+  </div>
+</section>
+
+<!-- MOOD TRACKER -->
+<section class="page" id="page-mood">
+  <div class="page-header">
+    <div><div class="eyebrow">Monthly</div><h1>Mood Tracker</h1></div>
+    <select id="moodMonth" class="month-select"></select>
+  </div>
+  <div class="card full" style="margin-bottom:1rem;">
+    <div class="card-header"><span class="card-title">Plot your mood — click a day</span></div>
+    <div style="display:flex;gap:0.75rem;margin-bottom:0.75rem;flex-wrap:wrap;" id="mood-legend"></div>
+    <div style="display:flex;gap:0.4rem;margin-bottom:0.5rem;">
+      <span style="font-size:0.7rem;color:var(--text3);writing-mode:initial;">1</span>
+    </div>
+    <div id="mood-day-labels" style="display:grid;grid-template-columns:repeat(31,1fr);gap:3px;margin-bottom:2px;"></div>
+    <div class="mood-grid" id="mood-grid"></div>
+    <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--text3);margin-top:0.25rem;">
+      <span>Worst</span><span>Bad</span><span>Okay</span><span>Good</span><span>Awesome</span>
+    </div>
+  </div>
+  <div class="card full">
+    <div class="card-header"><span class="card-title">Quote</span></div>
+    <div style="font-family:var(--serif);font-style:italic;color:var(--text2);font-size:0.95rem;">"If you can't measure it, you can't improve it." — Peter Drucker</div>
+  </div>
+</section>
+
+<!-- SKINCARE -->
+<section class="page" id="page-skincare">
+  <div class="page-header">
+    <div><div class="eyebrow">Wellness</div><h1>Skincare</h1></div>
+    <button class="btn-primary" onclick="openAddSkinStep()">+ Step</button>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Morning routine</span><span class="card-badge" id="am-pct">0%</span></div>
+      <div id="am-routine"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Night routine</span><span class="card-badge" id="pm-pct">0%</span></div>
+      <div id="pm-routine"></div>
+    </div>
+  </div>
+  <div class="card full">
+    <div class="card-header">
+      <span class="card-title">Selfie timeline</span>
+      <label class="btn-primary" style="cursor:pointer;display:inline-block;">
+        + Upload selfie
+        <input type="file" accept="image/*" id="selfie-upload" style="display:none;" onchange="uploadSelfie(event)"/>
+      </label>
+    </div>
+    <div class="selfie-grid" id="selfie-grid"></div>
+  </div>
+</section>
+
+<!-- HEALTH & FITNESS -->
+<section class="page" id="page-health">
+  <div class="page-header">
+    <div><div class="eyebrow">Wellness</div><h1>Health & Fitness</h1></div>
+    <input type="date" id="healthDate" class="month-select"/>
+  </div>
+  <div class="grid4" id="health-kpis"></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Water intake</span><span class="card-badge" id="water-badge">0 / 8 glasses</span></div>
+      <div class="water-dots" id="water-dots"></div>
+      <div style="font-size:0.78rem;color:var(--text3);margin-top:0.5rem;">Click glasses to log</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Today's workout</span><button class="btn-ghost" onclick="logWorkout()">Log</button></div>
+      <div id="workout-log"></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Weight log</span><button class="btn-ghost" onclick="logWeight()">+ Entry</button></div>
+      <div id="weight-log"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Meals today</span><button class="btn-ghost" onclick="logMeal()">+ Meal</button></div>
+      <div id="meal-log"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH LEARNING -->
+<section class="page" id="page-techlearn">
+  <div class="page-header">
+    <div><div class="eyebrow">Growth</div><h1>Technical Learning</h1></div>
+    <span class="card-badge" style="font-size:0.75rem;padding:0.35rem 0.9rem;">Oct 2026 target</span>
+  </div>
+  <div class="grid4" id="tech-kpis"></div>
+  <div class="grid2">
+    <div>
+      <div class="card" style="margin-bottom:1rem;">
+        <div class="card-header"><span class="card-title">July — V93K + Electronics</span><span class="card-badge">Must</span></div>
+        <div id="tech-july"></div>
+      </div>
+      <div class="card" style="margin-bottom:1rem;">
+        <div class="card-header"><span class="card-title">August — Test Theory + Python</span><span class="card-badge">Must</span></div>
+        <div id="tech-august"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">September — Embedded C + GitHub</span><span class="card-badge">Must</span></div>
+        <div id="tech-sept"></div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:1rem;">
+        <div class="card-header"><span class="card-title">Should learn</span><span class="card-badge">Later</span></div>
+        <div id="tech-should"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Study log — today</span><button class="btn-ghost" onclick="logStudy()">+ Log</button></div>
+        <div id="study-log"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LONG TERM GOALS -->
+<section class="page" id="page-longgoals">
+  <div class="page-header">
+    <div><div class="eyebrow">Growth</div><h1>Long Term Goals</h1></div>
+    <button class="btn-primary" onclick="openAddLTG()">+ Goal</button>
+  </div>
+  <div class="grid2" id="ltg-grid"></div>
+</section>
+
+<!-- BUDGET -->
+<section class="page" id="page-budget">
+  <div class="page-header">
+    <div><div class="eyebrow">Finance</div><h1>Budget Tracker</h1></div>
+    <div style="display:flex;gap:0.5rem;">
+      <select id="budgetMonth" class="month-select"></select>
+      <button class="btn-primary" onclick="openQuickExpense()">+ Expense</button>
+    </div>
+  </div>
+  <div class="grid4" id="budget-kpis"></div>
+  <div class="card full">
+    <div class="card-header"><span class="card-title">Budget vs actual</span><span id="budget-reflection-badge" class="card-badge"></span></div>
+    <div style="display:grid;grid-template-columns:1fr 100px 100px 80px;gap:0.5rem;padding:0.4rem 0;border-bottom:1px solid var(--border);">
+      <span style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;">Category</span>
+      <span style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;text-align:right;">Budget</span>
+      <span style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;text-align:right;">Actual</span>
+      <span style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;text-align:right;">Diff</span>
+    </div>
+    <div id="budget-table"></div>
+    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+      <div class="form-label" style="margin-bottom:0.4rem;">Where could I have reduced my spending?</div>
+      <textarea class="form-textarea" id="budget-reflection" placeholder="Reflect on this month's spending..."></textarea>
+    </div>
+  </div>
+  <div class="card full" style="margin-top:1rem;">
+    <div class="card-header"><span class="card-title">All transactions</span></div>
+    <table class="data-table">
+      <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th></th></tr></thead>
+      <tbody id="expense-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- INVESTMENTS -->
+<section class="page" id="page-investments">
+  <div class="page-header">
+    <div><div class="eyebrow">Finance</div><h1>Investments</h1></div>
+    <button class="btn-primary" onclick="openAddInvestment()">+ Add</button>
+  </div>
+  <div class="grid4" id="invest-kpis"></div>
+  <div class="card full">
+    <div class="card-header"><span class="card-title">Holdings</span></div>
+    <table class="data-table">
+      <thead><tr><th>Name</th><th>Type</th><th>Monthly SIP</th><th>Returns</th><th></th></tr></thead>
+      <tbody id="invest-body"></tbody>
+    </table>
+  </div>
+  <div class="card full" style="margin-top:1rem;">
+    <div class="card-header"><span class="card-title">EPF tracker</span><span class="card-badge">Company benefit</span></div>
+    <div id="epf-info"></div>
+  </div>
+  <div class="card full" style="margin-top:1rem;">
+    <div class="card-header"><span class="card-title">Growth projection</span><span class="card-badge">11% p.a.</span></div>
+    <div id="invest-projection" style="height:180px;"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header"><span id="modalTitle">Add</span><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button class="btn-sec" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="modalSave()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// STATE & STORAGE
+// ═══════════════════════════════════════
+const SK = 'lifeos_v1';
+
+const defaultState = {
+  phase: 'intern',
+  dailySheets: {},
+  habits: [
+    {id:1,name:'Wake up at 05:00',color:0},
+    {id:2,name:'Gym / Exercise',color:1},
+    {id:3,name:'Reading / Learning',color:2},
+    {id:4,name:'Budget Tracking',color:3},
+    {id:5,name:'V93K Study',color:4},
+    {id:6,name:'No Junk Food',color:5},
+    {id:7,name:'Goal Journaling',color:6},
+    {id:8,name:'Cold Shower',color:7},
+  ],
+  habitLogs: {},
+  moods: {},
+  events: [],
+  birthdays: [],
+  calNotes: {},
+  monthMottos: {},
+  monthGoals: {},
+  monthTodos: {},
+  monthDates: {},
+  shopping: [],
+  skinRoutine: {
+    am: [
+      {id:1,name:'Cleanser',done:false},
+      {id:2,name:'Toner',done:false},
+      {id:3,name:'Moisturiser',done:false},
+      {id:4,name:'Sunscreen SPF 50+',done:false},
+    ],
+    pm: [
+      {id:1,name:'Oil cleanser / micellar water',done:false},
+      {id:2,name:'Face wash',done:false},
+      {id:3,name:'Serum / treatment',done:false},
+      {id:4,name:'Night cream',done:false},
+    ]
+  },
+  selfies: [],
+  health: {},
+  techProgress: {
+    july: [
+      {id:1,name:'V93K SmartScale fundamentals',done:false},
+      {id:2,name:'V93K DC parametric tests',done:false},
+      {id:3,name:'V93K timing & functional test',done:false},
+      {id:4,name:'Op-amp analysis (gain, feedback)',done:false},
+      {id:5,name:'BJT regions (saturation/active/cutoff)',done:false},
+    ],
+    august: [
+      {id:1,name:'IDDQ testing theory',done:false},
+      {id:2,name:'ATPG & scan chain basics',done:false},
+      {id:3,name:'Cpk / Ppk statistics',done:false},
+      {id:4,name:'Python scripting basics',done:false},
+      {id:5,name:'Python for test automation',done:false},
+    ],
+    sept: [
+      {id:1,name:'volatile & memory-mapped I/O',done:false},
+      {id:2,name:'DMA & interrupts (STM32)',done:false},
+      {id:3,name:'Embedded C project (STM32 Blue Pill)',done:false},
+      {id:4,name:'ATE Test Log Analyser (Python) — GitHub',done:false},
+    ],
+    should: [
+      {id:1,name:'Mixed signal testing',done:false},
+      {id:2,name:'DFT fundamentals',done:false},
+      {id:3,name:'Statistics for test engineers',done:false},
+      {id:4,name:'RTOS basics',done:false},
+      {id:5,name:'Linux command line',done:false},
+    ]
+  },
+  studyLogs: [],
+  ltGoals: [
+    {id:1,name:'First MNC offer (TI/Qualcomm/NXP)',target:'Oct 2026',progress:10,color:'ltg-green',desc:'Active applications, V93K trained'},
+    {id:2,name:'Reach 15 LPA',target:'2027',progress:5,color:'ltg-blue',desc:'After first MNC jump'},
+    {id:3,name:'Relocate to Singapore / Netherlands',target:'2028–29',progress:2,color:'ltg-orange',desc:'Employment Pass / HSM Visa'},
+    {id:4,name:'100 LPA global equivalent',target:'35–40 yrs',progress:1,color:'ltg-pink',desc:'The north star goal'},
+  ],
+  investments: [
+    {id:1,name:'Nifty 50 Index Fund',type:'mf',monthly:1500,returns:11.84},
+  ],
+  epfMonths: 0,
+  expenses: {},
+  budgetPlans: {},
+};
+
+let S = JSON.parse(localStorage.getItem(SK) || 'null') || JSON.parse(JSON.stringify(defaultState));
+function save() { localStorage.setItem(SK, JSON.stringify(S)); }
+
+// Utils
+function fmt(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+function today() { return new Date().toISOString().split('T')[0]; }
+function ym(d) { const dt = d ? new Date(d) : new Date(); return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`; }
+function monthLabel(ymStr) { if(!ymStr) return ''; const [y,m] = ymStr.split('-'); return new Date(y,m-1,1).toLocaleString('default',{month:'long',year:'numeric'}); }
+function uid() { return Date.now() + Math.floor(Math.random()*10000); }
+function daysInMonth(ymStr) { const [y,m] = ymStr.split('-'); return new Date(y,m,0).getDate(); }
+function getMonths(n=12) {
+  const months=[]; const d=new Date();
+  for(let i=n-1;i>=0;i--){ const dd=new Date(d.getFullYear(),d.getMonth()-i,1); months.push(`${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}`); }
+  return months;
+}
+
+const PHASES = {
+  intern: { label:'Internship', income:15000 },
+  job: { label:'Post-Absorption', income:42500 }
+};
+
+const BUDGET_CATS = {
+  'Fixed Expenses': ['Rent','EMI','Insurance'],
+  'House Expenses': ['Maid / Housekeeping','Repairs / Maintenance','Groceries','Electricity','Gas','Cable / OTT'],
+  'Personal / Family': ['Health & Fitness','Grooming','Mobile / Internet','Fuel / Travel','Shopping','Dining Out','Entertainment'],
+  'Miscellaneous': ['Charity / Gifts','Other'],
+  'Savings / Investment': ['Emergency Fund','Nifty 50 SIP','Other Investment']
+};
+const ALL_CATS = Object.values(BUDGET_CATS).flat();
+
+const MOOD_LABELS = ['','Worst','Bad','Okay','Good','Awesome'];
+const MOOD_COLORS = ['','#f05b5b','#f0a05b','#f0e05b','#00e5a0','#5b6af0'];
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const page = btn.dataset.page;
+    document.getElementById('page-'+page).classList.add('active');
+    renderPage(page);
+  });
+});
+
+document.getElementById('phaseIntern').onclick = () => setPhase('intern');
+document.getElementById('phaseJob').onclick = () => setPhase('job');
+function setPhase(p) {
+  S.phase = p; save();
+  document.getElementById('phaseIntern').classList.toggle('active', p==='intern');
+  document.getElementById('phaseJob').classList.toggle('active', p==='job');
+  renderPage(currentPage());
+}
+function currentPage() { return document.querySelector('.page.active')?.id?.replace('page-','') || 'dashboard'; }
+
+function populateSelects() {
+  const months = getMonths(12);
+  const ids = ['dashMonth','calMonth','planMonth','habitMonth','moodMonth','budgetMonth','expMonth'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.innerHTML = months.map(m=>`<option value="${m}"${m===ym()?'selected':''}>${monthLabel(m)}</option>`).join('');
+  });
+  document.getElementById('dailyDate').value = today();
+  document.getElementById('healthDate').value = today();
+}
+
+function renderPage(page) {
+  switch(page) {
+    case 'dashboard': renderDashboard(); break;
+    case 'daily': renderDaily(); break;
+    case 'monthglance': renderMonthGlance(); break;
+    case 'monthplan': renderMonthPlan(); break;
+    case 'habits': renderHabits(); break;
+    case 'mood': renderMood(); break;
+    case 'skincare': renderSkincare(); break;
+    case 'health': renderHealth(); break;
+    case 'techlearn': renderTechLearn(); break;
+    case 'longgoals': renderLTG(); break;
+    case 'budget': renderBudget(); break;
+    case 'investments': renderInvestments(); break;
+  }
+}
+
+// ═══════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════
+function renderDashboard() {
+  const curYm = ym();
+  const td = today();
+  const exps = S.expenses[curYm] || [];
+  const totalSpent = exps.reduce((s,e)=>s+e.amount,0);
+  const income = PHASES[S.phase].income;
+  const logs = S.habitLogs[curYm] || {};
+  const todayLogs = logs[td] || {};
+  const habitDone = S.habits.filter(h=>todayLogs[h.id]).length;
+  const techDone = [...S.techProgress.july,...S.techProgress.august,...S.techProgress.sept,...S.techProgress.should].filter(t=>t.done).length;
+  const techTotal = [...S.techProgress.july,...S.techProgress.august,...S.techProgress.sept,...S.techProgress.should].length;
+
+  document.getElementById('dash-kpis').innerHTML = `
+    <div class="kpi"><div class="kpi-label">Habits today</div><div class="kpi-value kpi-accent">${habitDone}/${S.habits.length}</div><div class="kpi-sub">Keep the streak</div></div>
+    <div class="kpi"><div class="kpi-label">Budget remaining</div><div class="kpi-value ${income-totalSpent<0?'kpi-danger':'kpi-accent'}">${fmt(income-totalSpent)}</div><div class="kpi-sub">${Math.round(totalSpent/income*100)}% spent</div></div>
+    <div class="kpi"><div class="kpi-label">Tech progress</div><div class="kpi-value kpi-purple">${Math.round(techDone/techTotal*100)}%</div><div class="kpi-sub">${techDone}/${techTotal} topics</div></div>
+    <div class="kpi"><div class="kpi-label">Today</div><div class="kpi-value" style="font-size:0.9rem;">${new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})}</div><div class="kpi-sub">${S.phase==='intern'?'Internship':'Full-time'} phase</div></div>
+  `;
+
+  // Today habits quick
+  document.getElementById('dash-habits-today').innerHTML = S.habits.slice(0,6).map(h=>`
+    <div class="check-item ${todayLogs[h.id]?'done':''}">
+      <input type="checkbox" ${todayLogs[h.id]?'checked':''} onchange="quickToggleHabit(${h.id},this.checked)"/>
+      <span>${h.name}</span>
+    </div>
+  `).join('');
+  document.getElementById('dash-habit-pct').textContent = Math.round(habitDone/S.habits.length*100)+'%';
+
+  // Mini mood
+  const moodData = S.moods[curYm] || {};
+  const days = daysInMonth(curYm);
+  document.getElementById('dash-mood-mini').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(${Math.ceil(days/2)},1fr);gap:3px;">
+      ${Array.from({length:days},(_,i)=>{
+        const d=String(i+1).padStart(2,'0');
+        const key=`${curYm}-${d}`;
+        const v=moodData[key]||0;
+        return `<div style="width:100%;aspect-ratio:1;border-radius:3px;background:${v?MOOD_COLORS[v]:'var(--surface2)'};border:1px solid var(--border);" title="Day ${i+1}: ${MOOD_LABELS[v]||'Not set'}"></div>`;
+      }).join('')}
+    </div>
+    <div style="font-size:0.7rem;color:var(--text3);margin-top:0.5rem;">${monthLabel(curYm)}</div>
+  `;
+
+  // Budget snap
+  const totalBudget = Object.values(S.budgetPlans[curYm]||{}).reduce((s,v)=>s+v,0) || income;
+  document.getElementById('dash-budget-snap').innerHTML = `
+    <div style="margin-bottom:0.75rem;">
+      <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text2);margin-bottom:0.35rem;"><span>Spent</span><span>${fmt(totalSpent)} / ${fmt(income)}</span></div>
+      <div class="prog-wrap"><div class="prog-bar" style="width:${Math.min(100,totalSpent/income*100)}%;background:${totalSpent>income?'var(--danger)':'var(--accent)'}"></div></div>
+    </div>
+    <div style="font-size:0.78rem;color:var(--text3);">${exps.length} transactions this month</div>
+  `;
+
+  // Tech snap
+  const months_data = [
+    {label:'July',items:S.techProgress.july},
+    {label:'August',items:S.techProgress.august},
+    {label:'September',items:S.techProgress.sept},
+  ];
+  document.getElementById('dash-tech-snap').innerHTML = months_data.map(m=>{
+    const pct = m.items.length ? Math.round(m.items.filter(i=>i.done).length/m.items.length*100) : 0;
+    return `<div style="margin-bottom:0.65rem;">
+      <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text2);margin-bottom:0.3rem;"><span>${m.label}</span><span style="font-family:var(--mono);color:var(--accent);">${pct}%</span></div>
+      <div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:var(--accent2);"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function quickToggleHabit(id, val) {
+  const td = today();
+  const m = ym();
+  if(!S.habitLogs[m]) S.habitLogs[m] = {};
+  if(!S.habitLogs[m][td]) S.habitLogs[m][td] = {};
+  S.habitLogs[m][td][id] = val;
+  save();
+  renderDashboard();
+}
+
+// ═══════════════════════════════════════
+// DAILY SHEET
+// ═══════════════════════════════════════
+function renderDaily() {
+  const date = document.getElementById('dailyDate').value || today();
+  const sheet = S.dailySheets[date] || {};
+  document.getElementById('ds-affirmation').value = sheet.affirmation||'';
+  document.getElementById('ds-grateful').value = sheet.grateful||'';
+  document.getElementById('ds-highlights').value = sheet.highlights||'';
+  document.getElementById('ds-better').value = sheet.better||'';
+  document.getElementById('ds-thoughts').value = sheet.thoughts||'';
+  document.getElementById('ds-notes').value = sheet.notes||'';
+  renderPriorities('work', sheet.workPrios||[]);
+  renderPriorities('family', sheet.familyPrios||[]);
+  renderPriorities('self', sheet.selfPrios||[]);
+  renderRating('work', sheet.rateWork||0, '○', '#f0a05b');
+  renderRating('family', sheet.rateFamily||0, '♥', '#f05b9e');
+  renderRating('self', sheet.rateSelf||0, '★', '#5b6af0');
+  renderDailyMoodPick(sheet.mood||0);
+}
+
+function renderPriorities(type, prios) {
+  const container = document.getElementById(type+'-priorities');
+  container.innerHTML = prios.map((p,i)=>`
+    <div class="ds-priority-item">
+      <input type="checkbox" ${p.done?'checked':''} onchange="toggleDailyPrio('${type}',${i},this.checked)"/>
+      <span style="${p.done?'text-decoration:line-through;color:var(--text3)':''}">${p.text}</span>
+    </div>
+  `).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.25rem 0;">No priorities added</div>';
+}
+
+function addPriority(type) {
+  const input = document.getElementById(type+'-prio-input');
+  const text = input.value.trim();
+  if(!text) return;
+  const date = document.getElementById('dailyDate').value || today();
+  if(!S.dailySheets[date]) S.dailySheets[date] = {};
+  const key = type+'Prios';
+  if(!S.dailySheets[date][key]) S.dailySheets[date][key] = [];
+  S.dailySheets[date][key].push({text, done:false});
+  save(); input.value='';
+  renderPriorities(type, S.dailySheets[date][key]);
+}
+
+function toggleDailyPrio(type, idx, val) {
+  const date = document.getElementById('dailyDate').value || today();
+  if(!S.dailySheets[date]) S.dailySheets[date]={};
+  const key = type+'Prios';
+  if(S.dailySheets[date][key]) S.dailySheets[date][key][idx].done = val;
+  save();
+  renderPriorities(type, S.dailySheets[date][key]||[]);
+}
+
+function renderRating(type, val, icon, color) {
+  const container = document.getElementById('rate-'+type);
+  container.innerHTML = [1,2,3,4,5].map(i=>`
+    <span class="rate-icon ${val>=i?'active':''}" style="color:${color}" onclick="setRating('${type}',${i})">${icon}</span>
+  `).join('');
+}
+
+function setRating(type, val) {
+  const date = document.getElementById('dailyDate').value || today();
+  if(!S.dailySheets[date]) S.dailySheets[date]={};
+  const key = 'rate'+type.charAt(0).toUpperCase()+type.slice(1);
+  S.dailySheets[date][key] = val; save();
+  const colors = {work:'#f0a05b',family:'#f05b9e',self:'#5b6af0'};
+  const icons = {work:'○',family:'♥',self:'★'};
+  renderRating(type, val, icons[type], colors[type]);
+}
+
+function renderDailyMoodPick(val) {
+  const container = document.getElementById('daily-mood-pick');
+  const labels = ['😔','😕','😐','😊','🤩'];
+  container.innerHTML = labels.map((l,i)=>`
+    <span style="font-size:1.4rem;cursor:pointer;opacity:${val===i+1?1:0.35};transition:opacity 0.15s;" onclick="setDailyMood(${i+1})">${l}</span>
+  `).join('');
+}
+
+function setDailyMood(val) {
+  const date = document.getElementById('dailyDate').value || today();
+  if(!S.dailySheets[date]) S.dailySheets[date]={};
+  S.dailySheets[date].mood = val;
+  // also log to mood tracker
+  if(!S.moods[ym(date)]) S.moods[ym(date)] = {};
+  S.moods[ym(date)][date] = val;
+  save(); renderDailyMoodPick(val);
+}
+
+function saveDaily() {
+  const date = document.getElementById('dailyDate').value || today();
+  if(!S.dailySheets[date]) S.dailySheets[date]={};
+  const d = S.dailySheets[date];
+  d.affirmation = document.getElementById('ds-affirmation').value;
+  d.grateful = document.getElementById('ds-grateful').value;
+  d.highlights = document.getElementById('ds-highlights').value;
+  d.better = document.getElementById('ds-better').value;
+  d.thoughts = document.getElementById('ds-thoughts').value;
+  d.notes = document.getElementById('ds-notes').value;
+  save();
+  showToast('Day saved ✓');
+}
+
+document.getElementById('dailyDate').onchange = renderDaily;
+
+// ═══════════════════════════════════════
+// MONTH AT A GLANCE
+// ═══════════════════════════════════════
+function renderMonthGlance() {
+  const m = document.getElementById('calMonth').value || ym();
+  renderCalendar(m);
+  renderBdays(m);
+  document.getElementById('cal-notes').value = S.calNotes[m]||'';
+}
+
+function renderCalendar(m) {
+  const days = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  document.getElementById('cal-header').innerHTML = days.map(d=>`<div class="cal-day-label">${d}</div>`).join('');
+  const [y,mo] = m.split('-').map(Number);
+  const firstDay = new Date(y,mo-1,1).getDay();
+  const total = new Date(y,mo,0).getDate();
+  const events = S.events.filter(e=>e.date.startsWith(m));
+  const bdays = S.birthdays;
+  const td = today();
+  let cells = '';
+  for(let i=0;i<firstDay;i++) cells+=`<div class="cal-day empty"></div>`;
+  for(let d=1;d<=total;d++) {
+    const dateStr = `${m}-${String(d).padStart(2,'0')}`;
+    const dayEvents = events.filter(e=>e.date===dateStr);
+    const bdayMatches = bdays.filter(b=>{
+      const bDate = b.date.slice(5);
+      return bDate === dateStr.slice(5);
+    });
+    const isToday = dateStr===td;
+    const hasEvent = dayEvents.length>0||bdayMatches.length>0;
+    cells += `<div class="cal-day ${isToday?'today':''} ${hasEvent?'has-event':''}" onclick="calDayClick('${dateStr}')">
+      <div class="cal-num">${d}</div>
+      ${bdayMatches.map(b=>`<div class="cal-event bday">🎂 ${b.name}</div>`).join('')}
+      ${dayEvents.map(e=>`<div class="cal-event">${e.title}</div>`).join('')}
+    </div>`;
+  }
+  document.getElementById('cal-grid').innerHTML = cells;
+}
+
+function calDayClick(dateStr) {
+  openModal('Add event', `
+    <div class="form-group"><div class="form-label">Date</div><input type="date" class="form-input" id="evt-date" value="${dateStr}"/></div>
+    <div class="form-group"><div class="form-label">Event title</div><input type="text" class="form-input" id="evt-title" placeholder="e.g. Doctor appointment"/></div>
+    <div class="form-group"><div class="form-label">Type</div>
+      <select class="form-select" id="evt-type"><option value="event">Event</option><option value="appointment">Appointment</option><option value="reminder">Reminder</option></select>
+    </div>
+  `, () => {
+    const title = document.getElementById('evt-title').value.trim();
+    if(!title) return;
+    S.events.push({id:uid(),date:document.getElementById('evt-date').value,title,type:document.getElementById('evt-type').value});
+    save(); renderMonthGlance();
+  });
+}
+
+function openAddEvent() { calDayClick(today()); }
+
+function renderBdays(m) {
+  const bdays = S.birthdays;
+  document.getElementById('bday-list').innerHTML = bdays.length
+    ? bdays.map(b=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:0.45rem 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
+        <span>🎂 ${b.name}</span><span style="color:var(--text3);font-family:var(--mono);font-size:0.72rem;">${b.date.slice(5)}</span>
+        <button class="del-btn" onclick="delBday(${b.id})">✕</button>
+      </div>`).join('')
+    : '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">No birthdays added</div>';
+}
+
+function openAddBday() {
+  openModal('Add birthday', `
+    <div class="form-group"><div class="form-label">Name</div><input type="text" class="form-input" id="bday-name" placeholder="Friend / family name"/></div>
+    <div class="form-group"><div class="form-label">Date</div><input type="date" class="form-input" id="bday-date"/></div>
+  `, () => {
+    const name = document.getElementById('bday-name').value.trim();
+    if(!name) return;
+    S.birthdays.push({id:uid(),name,date:document.getElementById('bday-date').value});
+    save(); renderMonthGlance();
+  });
+}
+function delBday(id) { S.birthdays=S.birthdays.filter(b=>b.id!==id); save(); renderMonthGlance(); }
+
+document.getElementById('calMonth').onchange = renderMonthGlance;
+document.getElementById('cal-notes').addEventListener('input', function() {
+  S.calNotes[document.getElementById('calMonth').value||ym()] = this.value; save();
+});
+
+// ═══════════════════════════════════════
+// MONTH PLANNER
+// ═══════════════════════════════════════
+function renderMonthPlan() {
+  const m = document.getElementById('planMonth').value||ym();
+  document.getElementById('month-motto').value = S.monthMottos[m]||'';
+  renderMonthGoals(m); renderMonthTodos(m); renderMonthDates(m); renderShopping();
+}
+
+function renderMonthGoals(m) {
+  const goals = S.monthGoals[m]||[];
+  document.getElementById('month-goals-list').innerHTML = goals.map((g,i)=>`
+    <div class="check-item ${g.done?'done':''}">
+      <input type="checkbox" ${g.done?'checked':''} onchange="toggleMonthGoal('${m}',${i},this.checked)"/>
+      <span style="flex:1">${g.text}</span>
+      <button class="del-btn" onclick="delMonthGoal('${m}',${i})">✕</button>
+    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">No goals yet</div>';
+}
+
+function addMonthGoal() {
+  const m = document.getElementById('planMonth').value||ym();
+  const text = document.getElementById('month-goal-input').value.trim();
+  if(!text) return;
+  if(!S.monthGoals[m]) S.monthGoals[m]=[];
+  S.monthGoals[m].push({text,done:false});
+  document.getElementById('month-goal-input').value='';
+  save(); renderMonthGoals(m);
+}
+function toggleMonthGoal(m,i,v) { S.monthGoals[m][i].done=v; save(); renderMonthGoals(m); }
+function delMonthGoal(m,i) { S.monthGoals[m].splice(i,1); save(); renderMonthGoals(m); }
+
+function renderMonthTodos(m) {
+  const todos = S.monthTodos[m]||[];
+  document.getElementById('month-todo-list').innerHTML = todos.map((t,i)=>`
+    <div class="check-item ${t.done?'done':''}">
+      <input type="checkbox" ${t.done?'checked':''} onchange="toggleMonthTodo('${m}',${i},this.checked)"/>
+      <span style="flex:1">${t.text}</span>
+      <button class="del-btn" onclick="delMonthTodo('${m}',${i})">✕</button>
+    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">No tasks yet</div>';
+}
+function addMonthTodo() {
+  const m=document.getElementById('planMonth').value||ym();
+  const text=document.getElementById('month-todo-input').value.trim();
+  if(!text) return;
+  if(!S.monthTodos[m]) S.monthTodos[m]=[];
+  S.monthTodos[m].push({text,done:false});
+  document.getElementById('month-todo-input').value='';
+  save(); renderMonthTodos(m);
+}
+function toggleMonthTodo(m,i,v) { S.monthTodos[m][i].done=v; save(); renderMonthTodos(m); }
+function delMonthTodo(m,i) { S.monthTodos[m].splice(i,1); save(); renderMonthTodos(m); }
+
+function renderMonthDates(m) {
+  const dates = S.monthDates[m]||[];
+  document.getElementById('month-dates-list').innerHTML = dates.map((d,i)=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
+      <span style="color:var(--text)">${d.label}</span>
+      <span style="color:var(--accent3);font-family:var(--mono);font-size:0.72rem;">${d.date}</span>
+      <button class="del-btn" onclick="delMonthDate('${m}',${i})">✕</button>
+    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">No dates added</div>';
+}
+function addMonthDate() {
+  const m=document.getElementById('planMonth').value||ym();
+  const label=document.getElementById('month-date-label').value.trim();
+  const date=document.getElementById('month-date-val').value;
+  if(!label||!date) return;
+  if(!S.monthDates[m]) S.monthDates[m]=[];
+  S.monthDates[m].push({label,date});
+  document.getElementById('month-date-label').value='';
+  document.getElementById('month-date-val').value='';
+  save(); renderMonthDates(m);
+}
+function delMonthDate(m,i) { S.monthDates[m].splice(i,1); save(); renderMonthDates(m); }
+
+function renderShopping() {
+  document.getElementById('shopping-list').innerHTML = S.shopping.map((item,i)=>`
+    <div class="shop-item">
+      <input type="checkbox" class="shop-check" ${item.bought?'checked':''} onchange="toggleShop(${i},this.checked)"/>
+      <span class="shop-name ${item.bought?'bought':''}">${item.name}</span>
+      <span class="shop-cat">${item.cat||''}</span>
+      <button class="shop-del" onclick="delShop(${i})">✕</button>
+    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">List is empty</div>';
+}
+function addShopItem() {
+  const text=document.getElementById('shop-input').value.trim();
+  if(!text) return;
+  S.shopping.push({name:text,bought:false,cat:''});
+  document.getElementById('shop-input').value='';
+  save(); renderShopping();
+}
+function toggleShop(i,v) { S.shopping[i].bought=v; save(); renderShopping(); }
+function delShop(i) { S.shopping.splice(i,1); save(); renderShopping(); }
+
+document.getElementById('planMonth').onchange = renderMonthPlan;
+document.getElementById('month-motto').addEventListener('input', function() {
+  S.monthMottos[document.getElementById('planMonth').value||ym()] = this.value; save();
+});
+
+// ═══════════════════════════════════════
+// HABIT TRACKER
+// ═══════════════════════════════════════
+function renderHabits() {
+  const m = document.getElementById('habitMonth').value||ym();
+  const logs = S.habitLogs[m]||{};
+  const days = daysInMonth(m);
+  const COLORS_HEX = ['#00e5a0','#5b6af0','#f0a05b','#f05b9e','#a0d4f0','#e0a0f0','#f0e05b','#f05b5b'];
+
+  // Week rings
+  const weeksData = [1,2,3,4,5].map(w=>{
+    const start=(w-1)*7+1, end=Math.min(w*7,days);
+    let total=0,done=0;
+    for(let d=start;d<=end;d++){
+      const key=`${m}-${String(d).padStart(2,'0')}`;
+      const dayLog=logs[key]||{};
+      total+=S.habits.length;
+      done+=S.habits.filter(h=>dayLog[h.id]).length;
+    }
+    return {w,pct:total>0?Math.round(done/total*100):0,days:`${start}–${Math.min(end,days)}`};
+  }).filter(w=>w.days.split('–')[0]<=days);
+
+  document.getElementById('week-rings').innerHTML = weeksData.map(w=>`
+    <div class="week-ring-card">
+      <div class="week-ring-label">Week ${w.w} (${w.days})</div>
+      <svg viewBox="0 0 80 80" width="80" height="80" style="margin:0 auto;display:block;">
+        <circle cx="40" cy="40" r="30" fill="none" stroke="var(--surface2)" stroke-width="8"/>
+        <circle cx="40" cy="40" r="30" fill="none" stroke="${w.pct>=80?'#00e5a0':w.pct>=50?'#f0a05b':'#f05b5b'}" stroke-width="8"
+          stroke-dasharray="${2*Math.PI*30}" stroke-dashoffset="${2*Math.PI*30*(1-w.pct/100)}"
+          stroke-linecap="round" transform="rotate(-90 40 40)"/>
+        <text x="40" y="44" text-anchor="middle" fill="var(--text)" font-size="13" font-family="JetBrains Mono" font-weight="700">${w.pct}%</text>
+      </svg>
+    </div>
+  `).join('');
+
+  // Main grid
+  let headerCells = `<th class="habit-name-col">Habit</th>`;
+  for(let d=1;d<=days;d++) headerCells+=`<th>${d}</th>`;
+  headerCells+=`<th>%</th><th>Done</th>`;
+
+  let rows = S.habits.map((h,hi)=>{
+    let cells='';
+    let done=0;
+    const color=COLORS_HEX[h.color%COLORS_HEX.length];
+    for(let d=1;d<=days;d++){
+      const key=`${m}-${String(d).padStart(2,'0')}`;
+      const checked=(logs[key]||{})[h.id]||false;
+      if(checked) done++;
+      cells+=`<td><div class="habit-check ${checked?'done':''}" onclick="toggleHabit(${h.id},'${m}',${d})" style="${checked?'background:'+color+';border-color:'+color+';':''}">✓</div></td>`;
+    }
+    const pct=Math.round(done/days*100);
+    return `<tr>
+      <td class="habit-name"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:6px;"></span>${h.name}
+        <button class="del-btn" onclick="delHabit(${h.id})" style="margin-left:4px;font-size:0.65rem;">✕</button>
+      </td>
+      ${cells}
+      <td class="habit-pct" style="color:${color}">${pct}%</td>
+      <td class="habit-pct" style="color:var(--text3)">${done}</td>
+    </tr>`;
+  }).join('');
+
+  // Daily % row
+  let pctRow=`<tr><td class="habit-name" style="color:var(--text3);font-size:0.7rem;">Daily %</td>`;
+  let monthDone=0,monthTotal=0;
+  for(let d=1;d<=days;d++){
+    const key=`${m}-${String(d).padStart(2,'0')}`;
+    const dayLog=logs[key]||{};
+    const done=S.habits.filter(h=>dayLog[h.id]).length;
+    monthDone+=done; monthTotal+=S.habits.length;
+    const pct=S.habits.length>0?Math.round(done/S.habits.length*100):0;
+    pctRow+=`<td style="font-size:0.65rem;font-family:var(--mono);color:${pct>=80?'var(--accent)':pct>=50?'var(--accent3)':'var(--text3)'}">${pct}%</td>`;
+  }
+  pctRow+=`<td></td><td></td></tr>`;
+
+  document.getElementById('habit-table').innerHTML=`<thead><tr>${headerCells}</tr></thead><tbody>${rows}${pctRow}</tbody>`;
+  const totalPct=monthTotal>0?Math.round(monthDone/monthTotal*100):0;
+  document.getElementById('habit-total-pct').textContent=`${totalPct}% this month`;
+
+  // Analysis
+  document.getElementById('habit-analysis').innerHTML=`<div style="display:flex;flex-direction:column;gap:0.65rem;">
+    ${S.habits.map((h,hi)=>{
+      const color=COLORS_HEX[h.color%COLORS_HEX.length];
+      let done=0;
+      for(let d=1;d<=days;d++){const key=`${m}-${String(d).padStart(2,'0')}`;if((logs[key]||{})[h.id])done++;}
+      const pct=Math.round(done/days*100);
+      return `<div>
+        <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text2);margin-bottom:0.25rem;">
+          <span>${h.name}</span><span style="font-family:var(--mono);color:${color}">${pct}% (${done}/${days})</span>
+        </div>
+        <div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${color};"></div></div>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  // Line chart
+  const w=document.getElementById('habit-chart').offsetWidth||600, h2=120;
+  const pts=[];
+  for(let d=1;d<=days;d++){
+    const key=`${m}-${String(d).padStart(2,'0')}`;
+    const dl=logs[key]||{};
+    pts.push(S.habits.length>0?Math.round(S.habits.filter(x=>dl[x.id]).length/S.habits.length*100):0);
+  }
+  const toX=i=>(i/(days-1||1))*(w-40)+20;
+  const toY=v=>h2-10-(v/100)*(h2-20);
+  const path=pts.map((v,i)=>`${i===0?'M':'L'}${toX(i)},${toY(v)}`).join(' ');
+  const area=path+` L${toX(days-1)},${h2-10} L${toX(0)},${h2-10} Z`;
+  document.getElementById('habit-chart').innerHTML=`<svg viewBox="0 0 ${w} ${h2}" width="100%" height="${h2}">
+    <defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00e5a0" stop-opacity="0.3"/><stop offset="100%" stop-color="#00e5a0" stop-opacity="0.02"/></linearGradient></defs>
+    <path d="${area}" fill="url(#hg)"/>
+    <path d="${path}" fill="none" stroke="#00e5a0" stroke-width="2" stroke-linecap="round"/>
+    ${[0,25,50,75,100].map(v=>`<text x="15" y="${toY(v)+4}" fill="var(--text3)" font-size="8" font-family="JetBrains Mono" text-anchor="end">${v}%</text>`).join('')}
+  </svg>`;
+}
+
+function toggleHabit(hid, m, day) {
+  if(!S.habitLogs[m]) S.habitLogs[m]={};
+  const key=`${m}-${String(day).padStart(2,'0')}`;
+  if(!S.habitLogs[m][key]) S.habitLogs[m][key]={};
+  S.habitLogs[m][key][hid] = !S.habitLogs[m][key][hid];
+  save(); renderHabits();
+}
+
+function openAddHabit() {
+  openModal('Add habit', `
+    <div class="form-group"><div class="form-label">Habit name</div><input type="text" class="form-input" id="h-name" placeholder="e.g. Meditate 10 mins"/></div>
+  `, () => {
+    const name=document.getElementById('h-name').value.trim();
+    if(!name) return;
+    S.habits.push({id:uid(),name,color:S.habits.length%8});
+    save(); renderHabits();
+  });
+}
+function delHabit(id) { S.habits=S.habits.filter(h=>h.id!==id); save(); renderHabits(); }
+document.getElementById('habitMonth').onchange=renderHabits;
+
+// ═══════════════════════════════════════
+// MOOD TRACKER
+// ═══════════════════════════════════════
+function renderMood() {
+  const m = document.getElementById('moodMonth').value||ym();
+  const moods = S.moods[m]||{};
+  const days = daysInMonth(m);
+
+  // Legend
+  document.getElementById('mood-legend').innerHTML = [1,2,3,4,5].map(v=>`
+    <div style="display:flex;align-items:center;gap:5px;font-size:0.75rem;color:var(--text2);">
+      <div style="width:12px;height:12px;border-radius:3px;background:${MOOD_COLORS[v]};"></div>${MOOD_LABELS[v]}
+    </div>`).join('');
+
+  // Day labels
+  document.getElementById('mood-day-labels').innerHTML = Array.from({length:days},(_,i)=>`<div style="text-align:center;font-size:0.6rem;color:var(--text3);font-family:var(--mono);">${i+1}</div>`).join('');
+
+  // Grid
+  document.getElementById('mood-grid').innerHTML = Array.from({length:days},(_,i)=>{
+    const d=String(i+1).padStart(2,'0');
+    const key=`${m}-${d}`;
+    const v=moods[key]||0;
+    return `<div class="mood-dot mood-${v}" style="${v?'border-color:'+MOOD_COLORS[v]:''}" onclick="setMood('${key}','${m}')" title="Day ${i+1}: ${MOOD_LABELS[v]||'Click to set'}"></div>`;
+  }).join('');
+}
+
+let moodPickTarget = null;
+function setMood(key, m) {
+  openModal('How was this day?', `
+    <div style="display:flex;justify-content:space-around;padding:0.5rem 0;">
+      ${[1,2,3,4,5].map(v=>`<div onclick="pickMood('${key}','${m}',${v})" style="text-align:center;cursor:pointer;padding:0.5rem;">
+        <div style="width:32px;height:32px;border-radius:6px;background:${MOOD_COLORS[v]};margin:0 auto 0.35rem;"></div>
+        <div style="font-size:0.72rem;color:var(--text2);">${MOOD_LABELS[v]}</div>
+      </div>`).join('')}
+    </div>
+  `, ()=>{});
+}
+
+function pickMood(key, m, val) {
+  if(!S.moods[m]) S.moods[m]={};
+  S.moods[m][key]=val; save(); closeModal(); renderMood();
+}
+
+document.getElementById('moodMonth').onchange=renderMood;
+
+// ═══════════════════════════════════════
+// SKINCARE
+// ═══════════════════════════════════════
+function renderSkincare() {
+  renderRoutine('am'); renderRoutine('pm'); renderSelfies();
+}
+
+function renderRoutine(type) {
+  const steps = S.skinRoutine[type];
+  const done = steps.filter(s=>s.done).length;
+  const pct = steps.length?Math.round(done/steps.length*100):0;
+  document.getElementById(type+'-pct').textContent=pct+'%';
+  document.getElementById(type+'-routine').innerHTML = steps.map((s,i)=>`
+    <div class="skin-step">
+      <input type="checkbox" ${s.done?'checked':''} onchange="toggleSkinStep('${type}',${i},this.checked)" style="accent-color:var(--accent);width:15px;height:15px;cursor:pointer;"/>
+      <span class="skin-dot" style="background:${s.done?'var(--accent)':'var(--border)'}"></span>
+      <span class="skin-name" style="${s.done?'color:var(--text3);text-decoration:line-through;':''}">${s.name}</span>
+      <button class="del-btn" onclick="delSkinStep('${type}',${i})">✕</button>
+    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;">No steps added</div>';
+}
+
+function toggleSkinStep(type, i, val) {
+  S.skinRoutine[type][i].done=val; save(); renderRoutine(type);
+}
+function delSkinStep(type, i) { S.skinRoutine[type].splice(i,1); save(); renderRoutine(type); }
+
+function openAddSkinStep() {
+  openModal('Add skincare step', `
+    <div class="form-group"><div class="form-label">Step name</div><input type="text" class="form-input" id="sk-name" placeholder="e.g. Vitamin C serum"/></div>
+    <div class="form-group"><div class="form-label">Routine</div>
+      <select class="form-select" id="sk-type"><option value="am">Morning</option><option value="pm">Night</option></select>
+    </div>
+  `, ()=>{
+    const name=document.getElementById('sk-name').value.trim();
+    if(!name) return;
+    S.skinRoutine[document.getElementById('sk-type').value].push({id:uid(),name,done:false});
+    save(); renderSkincare();
+  });
+}
+
+function uploadSelfie(e) {
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    S.selfies.unshift({id:uid(),date:today(),src:ev.target.result});
+    save(); renderSelfies();
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderSelfies() {
+  const grid=document.getElementById('selfie-grid');
+  if(S.selfies.length===0){
+    grid.innerHTML='<div style="color:var(--text3);font-size:0.82rem;padding:1rem;">No selfies yet — upload one to start your timeline!</div>';
+    return;
+  }
+  grid.innerHTML=S.selfies.map((s,i)=>`
+    <div class="selfie-card">
+      <img src="${s.src}" class="selfie-img" alt="Selfie ${s.date}"/>
+      <div class="selfie-date">${s.date}</div>
+      <div style="text-align:center;padding-bottom:0.35rem;"><button class="del-btn" onclick="delSelfie(${i})" style="font-size:0.68rem;">Remove</button></div>
+    </div>`).join('');
+}
+function delSelfie(i) { S.selfies.splice(i,1); save(); renderSelfies(); }
+
+// ═══════════════════════════════════════
+// HEALTH & FITNESS
+// ═══════════════════════════════════════
+function renderHealth() {
+  const date=document.getElementById('healthDate').value||today();
+  const h=S.health[date]||{water:0,workouts:[],meals:[],weight:null};
+
+  const weights=Object.entries(S.health).filter(([,v])=>v.weight).map(([d,v])=>v.weight);
+  const lastWeight=weights[weights.length-1]||null;
+
+  document.getElementById('health-kpis').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Water today</div><div class="kpi-value kpi-purple">${h.water}/8</div><div class="kpi-sub">glasses</div></div>
+    <div class="kpi"><div class="kpi-label">Workouts today</div><div class="kpi-value kpi-accent">${(h.workouts||[]).length}</div><div class="kpi-sub">sessions</div></div>
+    <div class="kpi"><div class="kpi-label">Meals logged</div><div class="kpi-value kpi-orange">${(h.meals||[]).length}</div><div class="kpi-sub">today</div></div>
+    <div class="kpi"><div class="kpi-label">Weight</div><div class="kpi-value">${lastWeight?lastWeight+'kg':'—'}</div><div class="kpi-sub">last recorded</div></div>
+  `;
+
+  // Water
+  const dots=document.getElementById('water-dots');
+  dots.innerHTML=Array.from({length:8},(_,i)=>`
+    <div class="water-dot ${i<h.water?'filled':''}" onclick="setWater(${i+1},'${date}')">💧</div>`).join('');
+  document.getElementById('water-badge').textContent=`${h.water} / 8 glasses`;
+
+  document.getElementById('workout-log').innerHTML=(h.workouts||[]).map((w,i)=>`
+    <div style="display:flex;justify-content:space-between;padding:0.45rem 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
+      <span style="color:var(--text)">${w.name}</span>
+      <span style="color:var(--accent3);font-family:var(--mono);">${w.duration}min</span>
+      <button class="del-btn" onclick="delWorkout('${date}',${i})">✕</button>
+    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">No workouts logged</div>';
+
+  const weightEntries=Object.entries(S.health).filter(([,v])=>v.weight).sort(([a],[b])=>a>b?1:-1);
+  document.getElementById('weight-log').innerHTML=weightEntries.slice(-8).map(([d,v])=>`
+    <div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
+      <span style="color:var(--text3);font-family:var(--mono);font-size:0.72rem;">${d}</span>
+      <span style="color:var(--accent);font-family:var(--mono);">${v.weight} kg</span>
+    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">No entries yet</div>';
+
+  document.getElementById('meal-log').innerHTML=(h.meals||[]).map((m,i)=>`
+    <div style="display:flex;justify-content:space-between;padding:0.45rem 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
+      <span style="color:var(--text)">${m.name}</span>
+      <span style="color:var(--accent3);font-family:var(--mono);">${m.cal||'?'} kcal</span>
+      <button class="del-btn" onclick="delMeal('${date}',${i})">✕</button>
+    </div>`).join('') || '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">No meals logged</div>';
+}
+
+function setWater(n, date) {
+  if(!S.health[date]) S.health[date]={water:0,workouts:[],meals:[],weight:null};
+  S.health[date].water=n; save(); renderHealth();
+}
+
+function logWorkout() {
+  const date=document.getElementById('healthDate').value||today();
+  openModal('Log workout',`
+    <div class="form-group"><div class="form-label">Exercise</div><input type="text" class="form-input" id="wo-name" placeholder="e.g. Push-pull-legs, Run"/></div>
+    <div class="form-group"><div class="form-label">Duration (minutes)</div><input type="number" class="form-input" id="wo-dur" placeholder="45"/></div>
+  `,()=>{
+    const name=document.getElementById('wo-name').value.trim();
+    if(!name) return;
+    if(!S.health[date]) S.health[date]={water:0,workouts:[],meals:[],weight:null};
+    S.health[date].workouts.push({name,duration:document.getElementById('wo-dur').value||0});
+    save(); renderHealth();
+  });
+}
+function delWorkout(date,i){S.health[date].workouts.splice(i,1);save();renderHealth();}
+
+function logWeight() {
+  const date=document.getElementById('healthDate').value||today();
+  openModal('Log weight',`
+    <div class="form-group"><div class="form-label">Weight (kg)</div><input type="number" step="0.1" class="form-input" id="wt-val" placeholder="70.5"/></div>
+  `,()=>{
+    const val=parseFloat(document.getElementById('wt-val').value);
+    if(!val) return;
+    if(!S.health[date]) S.health[date]={water:0,workouts:[],meals:[],weight:null};
+    S.health[date].weight=val; save(); renderHealth();
+  });
+}
+
+function logMeal() {
+  const date=document.getElementById('healthDate').value||today();
+  openModal('Log meal',`
+    <div class="form-group"><div class="form-label">Meal / food</div><input type="text" class="form-input" id="ml-name" placeholder="e.g. Oats + banana, Dal rice"/></div>
+    <div class="form-group"><div class="form-label">Calories (approx)</div><input type="number" class="form-input" id="ml-cal" placeholder="400"/></div>
+  `,()=>{
+    const name=document.getElementById('ml-name').value.trim();
+    if(!name) return;
+    if(!S.health[date]) S.health[date]={water:0,workouts:[],meals:[],weight:null};
+    S.health[date].meals.push({name,cal:document.getElementById('ml-cal').value||null});
+    save(); renderHealth();
+  });
+}
+function delMeal(date,i){S.health[date].meals.splice(i,1);save();renderHealth();}
+document.getElementById('healthDate').onchange=renderHealth;
+
+// ═══════════════════════════════════════
+// TECH LEARNING
+// ═══════════════════════════════════════
+function renderTechLearn() {
+  const allTopics=[...S.techProgress.july,...S.techProgress.august,...S.techProgress.sept];
+  const done=allTopics.filter(t=>t.done).length;
+  const pct=Math.round(done/allTopics.length*100);
+  const shouldDone=S.techProgress.should.filter(t=>t.done).length;
+
+  document.getElementById('tech-kpis').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Overall progress</div><div class="kpi-value kpi-accent">${pct}%</div><div class="kpi-sub">${done}/${allTopics.length} core topics</div></div>
+    <div class="kpi"><div class="kpi-label">July topics</div><div class="kpi-value kpi-purple">${S.techProgress.july.filter(t=>t.done).length}/${S.techProgress.july.length}</div></div>
+    <div class="kpi"><div class="kpi-label">Aug topics</div><div class="kpi-value kpi-orange">${S.techProgress.august.filter(t=>t.done).length}/${S.techProgress.august.length}</div></div>
+    <div class="kpi"><div class="kpi-label">Should-learn</div><div class="kpi-value kpi-pink">${shouldDone}/${S.techProgress.should.length}</div></div>
+  `;
+
+  ['july','august','sept','should'].forEach(key=>{
+    document.getElementById('tech-'+key).innerHTML=S.techProgress[key].map((t,i)=>`
+      <div class="check-item ${t.done?'done':''}">
+        <input type="checkbox" ${t.done?'checked':''} onchange="toggleTech('${key}',${i},this.checked)"/>
+        <span style="flex:1;font-size:0.82rem;">${t.name}</span>
+      </div>`).join('');
+  });
+
+  const studyLogs=S.studyLogs.slice(-8).reverse();
+  document.getElementById('study-log').innerHTML=studyLogs.length
+    ? studyLogs.map((l,i)=>`
+        <div style="display:flex;justify-content:space-between;padding:0.45rem 0;border-bottom:1px solid var(--border);font-size:0.82rem;">
+          <div><div style="color:var(--text)">${l.topic}</div><div style="color:var(--text3);font-size:0.7rem;">${l.date}</div></div>
+          <div style="color:var(--accent);font-family:var(--mono);">${l.minutes}min</div>
+        </div>`).join('')
+    : '<div style="color:var(--text3);font-size:0.78rem;padding:0.35rem 0;">No study sessions logged</div>';
+}
+
+function toggleTech(key, i, val) { S.techProgress[key][i].done=val; save(); renderTechLearn(); }
+
+function logStudy() {
+  openModal('Log study session',`
+    <div class="form-group"><div class="form-label">Topic</div><input type="text" class="form-input" id="st-topic" placeholder="e.g. V93K DC parametrics"/></div>
+    <div class="form-group"><div class="form-label">Duration (minutes)</div><input type="number" class="form-input" id="st-min" placeholder="60"/></div>
+    <div class="form-group"><div class="form-label">Notes</div><textarea class="form-textarea" id="st-notes" placeholder="What did you cover?"></textarea></div>
+  `,()=>{
+    const topic=document.getElementById('st-topic').value.trim();
+    if(!topic) return;
+    S.studyLogs.push({topic,minutes:document.getElementById('st-min').value||0,notes:document.getElementById('st-notes').value,date:today()});
+    save(); renderTechLearn();
+  });
+}
+
+// ═══════════════════════════════════════
+// LONG TERM GOALS
+// ═══════════════════════════════════════
+function renderLTG() {
+  document.getElementById('ltg-grid').innerHTML=S.ltGoals.map(g=>`
+    <div class="ltg-card ${g.color}">
+      <div class="ltg-name">${g.name}</div>
+      <div class="ltg-target">Target: ${g.target}</div>
+      <div style="font-size:0.78rem;color:var(--text3);margin-bottom:0.75rem;">${g.desc}</div>
+      <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text2);margin-bottom:0.3rem;"><span>Progress</span><span style="font-family:var(--mono);">${g.progress}%</span></div>
+      <div class="prog-wrap"><div class="prog-bar" style="width:${g.progress}%;background:${g.color==='ltg-green'?'var(--accent)':g.color==='ltg-blue'?'var(--accent2)':g.color==='ltg-orange'?'var(--accent3)':'var(--accent4)'}"></div></div>
+      <div style="display:flex;gap:0.5rem;margin-top:1rem;">
+        <button class="btn-ghost" onclick="updateLTG(${g.id})">Update %</button>
+        <button class="del-btn" onclick="delLTG(${g.id})" style="margin-left:auto;">✕</button>
+      </div>
+    </div>`).join('')+`
+    <div class="ltg-card" style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;cursor:pointer;min-height:180px;" onclick="openAddLTG()">
+      <span style="font-size:1.75rem;color:var(--text3);">+</span>
+      <span style="color:var(--text3);font-size:0.82rem;">Add long term goal</span>
+    </div>`;
+}
+
+function updateLTG(id) {
+  const g=S.ltGoals.find(x=>x.id===id);
+  openModal('Update progress',`
+    <div class="form-group"><div class="form-label">Goal: ${g.name}</div>
+      <input type="range" min="0" max="100" value="${g.progress}" id="ltg-prog" class="form-input" style="padding:0;height:auto;"/>
+      <div style="text-align:right;font-family:var(--mono);font-size:0.82rem;" id="ltg-prog-val">${g.progress}%</div>
+    </div>
+    <div class="form-group"><div class="form-label">Notes / update</div><input type="text" class="form-input" id="ltg-note" placeholder="What's changed?"/></div>
+  `,()=>{
+    g.progress=+document.getElementById('ltg-prog').value;
+    save(); renderLTG();
+  });
+  setTimeout(()=>{
+    const sl=document.getElementById('ltg-prog');
+    const vl=document.getElementById('ltg-prog-val');
+    if(sl&&vl) sl.oninput=()=>{ vl.textContent=sl.value+'%'; };
+  },100);
+}
+
+function openAddLTG() {
+  openModal('New long term goal',`
+    <div class="form-group"><div class="form-label">Goal</div><input type="text" class="form-input" id="ltg-name" placeholder="e.g. Get into ASML Netherlands"/></div>
+    <div class="form-group"><div class="form-label">Target timeline</div><input type="text" class="form-input" id="ltg-target" placeholder="e.g. 2028"/></div>
+    <div class="form-group"><div class="form-label">Description</div><input type="text" class="form-input" id="ltg-desc" placeholder="Brief description"/></div>
+    <div class="form-group"><div class="form-label">Color</div>
+      <select class="form-select" id="ltg-color">
+        <option value="ltg-green">Green</option><option value="ltg-blue">Blue</option>
+        <option value="ltg-orange">Orange</option><option value="ltg-pink">Pink</option>
+      </select>
+    </div>
+  `,()=>{
+    const name=document.getElementById('ltg-name').value.trim();
+    if(!name) return;
+    S.ltGoals.push({id:uid(),name,target:document.getElementById('ltg-target').value,desc:document.getElementById('ltg-desc').value,progress:0,color:document.getElementById('ltg-color').value});
+    save(); renderLTG();
+  });
+}
+function delLTG(id){S.ltGoals=S.ltGoals.filter(g=>g.id!==id);save();renderLTG();}
+
+// ═══════════════════════════════════════
+// BUDGET
+// ═══════════════════════════════════════
+function renderBudget() {
+  const m=document.getElementById('budgetMonth').value||ym();
+  const exps=S.expenses[m]||[];
+  const plans=S.budgetPlans[m]||{};
+  const income=PHASES[S.phase].income;
+  const totalSpent=exps.reduce((s,e)=>s+e.amount,0);
+  const totalBudgeted=Object.values(plans).reduce((s,v)=>s+v,0);
+
+  document.getElementById('budget-kpis').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Income</div><div class="kpi-value kpi-accent">${fmt(income)}</div><div class="kpi-sub">${PHASES[S.phase].label}</div></div>
+    <div class="kpi"><div class="kpi-label">Budgeted</div><div class="kpi-value kpi-purple">${fmt(totalBudgeted)}</div></div>
+    <div class="kpi"><div class="kpi-label">Actual spent</div><div class="kpi-value ${totalSpent>income?'kpi-danger':'kpi-warn'}">${fmt(totalSpent)}</div></div>
+    <div class="kpi"><div class="kpi-label">Remaining</div><div class="kpi-value ${income-totalSpent<0?'kpi-danger':'kpi-accent'}">${fmt(income-totalSpent)}</div></div>
+  `;
+
+  // Budget table
+  let tableHTML='';
+  Object.entries(BUDGET_CATS).forEach(([section,cats])=>{
+    tableHTML+=`<div class="budget-section-title">${section}</div>`;
+    cats.forEach(cat=>{
+      const budgeted=plans[cat]||0;
+      const actual=exps.filter(e=>e.category===cat).reduce((s,e)=>s+e.amount,0);
+      const diff=budgeted-actual;
+      tableHTML+=`<div class="budget-row">
+        <span class="budget-cat">${cat}</span>
+        <div class="budget-cols">
+          <input type="number" class="budget-input" value="${budgeted||''}" placeholder="0" onchange="setBudget('${m}','${cat}',this.value)"/>
+          <span class="budget-actual" style="color:${actual>0?'var(--text)':'var(--text3)'}">${actual>0?fmt(actual):'—'}</span>
+          <span class="budget-diff ${budgeted>0?(diff>=0?'diff-ok':'diff-over'):''}">
+            ${budgeted>0?(diff>=0?'+':'')+fmt(diff):'—'}
+          </span>
+        </div>
+      </div>`;
+    });
+  });
+  document.getElementById('budget-table').innerHTML=tableHTML;
+  document.getElementById('budget-reflection').value=S.dailySheets['budget-reflect-'+m]||'';
+
+  // Transactions
+  const sorted=(exps).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  document.getElementById('expense-body').innerHTML=sorted.length
+    ? sorted.map(e=>`<tr>
+        <td style="font-family:var(--mono);font-size:0.72rem;">${e.date}</td>
+        <td>${e.desc}</td>
+        <td><span class="badge badge-orange">${e.category}</span></td>
+        <td style="font-family:var(--mono);">${fmt(e.amount)}</td>
+        <td><button class="del-btn" onclick="delExpense('${m}',${e.id})">✕</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:1.5rem;">No transactions yet</td></tr>';
+}
+
+function setBudget(m, cat, val) {
+  if(!S.budgetPlans[m]) S.budgetPlans[m]={};
+  S.budgetPlans[m][cat]=parseFloat(val)||0; save();
+}
+
+function openQuickExpense() {
+  const m=document.getElementById('budgetMonth').value||ym();
+  openModal('Add expense',`
+    <div class="form-group"><div class="form-label">Date</div><input type="date" class="form-input" id="e-date" value="${today()}"/></div>
+    <div class="form-group"><div class="form-label">Description</div><input type="text" class="form-input" id="e-desc" placeholder="e.g. Swiggy dinner, Ola ride"/></div>
+    <div class="form-group"><div class="form-label">Category</div>
+      <select class="form-select" id="e-cat">${ALL_CATS.map(c=>`<option>${c}</option>`).join('')}</select>
+    </div>
+    <div class="form-group"><div class="form-label">Amount (₹)</div><input type="number" class="form-input" id="e-amt" placeholder="500"/></div>
+  `,()=>{
+    const desc=document.getElementById('e-desc').value.trim();
+    const amt=parseFloat(document.getElementById('e-amt').value);
+    if(!desc||!amt) return;
+    if(!S.expenses[m]) S.expenses[m]=[];
+    S.expenses[m].push({id:uid(),date:document.getElementById('e-date').value,desc,category:document.getElementById('e-cat').value,amount:amt});
+    save(); renderBudget();
+  });
+}
+function delExpense(m,id){S.expenses[m]=S.expenses[m].filter(e=>e.id!==id);save();renderBudget();}
+document.getElementById('budgetMonth').onchange=renderBudget;
+document.getElementById('budget-reflection').addEventListener('input',function(){
+  const m=document.getElementById('budgetMonth').value||ym();
+  S.dailySheets['budget-reflect-'+m]=this.value; save();
+});
+
+// ═══════════════════════════════════════
+// INVESTMENTS (from Finflow)
+// ═══════════════════════════════════════
+function renderInvestments() {
+  const totalSIP=S.investments.reduce((s,i)=>s+i.monthly,0);
+  const months=S.epfMonths||0;
+  const epfTotal=months*2400*2;
+
+  document.getElementById('invest-kpis').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Monthly SIP</div><div class="kpi-value kpi-accent">${fmt(totalSIP)}</div></div>
+    <div class="kpi"><div class="kpi-label">Instruments</div><div class="kpi-value">${S.investments.length}</div></div>
+    <div class="kpi"><div class="kpi-label">EPF corpus</div><div class="kpi-value kpi-warn">${fmt(epfTotal)}</div><div class="kpi-sub">${months} months</div></div>
+    <div class="kpi"><div class="kpi-label">Projected 10yr</div><div class="kpi-value kpi-purple">${fmt(totalSIP*((Math.pow(1.11/12+1,120)-1)/((0.11/12))))} </div></div>
+  `;
+
+  document.getElementById('invest-body').innerHTML=S.investments.map(inv=>`<tr>
+    <td>${inv.name}</td>
+    <td><span class="badge badge-green">${inv.type.toUpperCase()}</span></td>
+    <td style="font-family:var(--mono);">${fmt(inv.monthly)}/mo</td>
+    <td style="color:var(--accent);font-family:var(--mono);">+${inv.returns}%</td>
+    <td><button class="del-btn" onclick="delInvestment(${inv.id})">✕</button></td>
+  </tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:1.5rem;">No investments — add one!</td></tr>';
+
+  document.getElementById('epf-info').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:1rem;">
+      <div style="background:var(--surface2);border-radius:var(--rs);padding:0.9rem;"><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;margin-bottom:0.35rem;">Basic salary</div><div style="font-family:var(--mono);font-size:1rem;color:var(--text);">₹20,000</div></div>
+      <div style="background:var(--surface2);border-radius:var(--rs);padding:0.9rem;"><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;margin-bottom:0.35rem;">Your 12%</div><div style="font-family:var(--mono);font-size:1rem;color:var(--accent2);">₹2,400/mo</div></div>
+      <div style="background:var(--surface2);border-radius:var(--rs);padding:0.9rem;"><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;margin-bottom:0.35rem;">Employer match</div><div style="font-family:var(--mono);font-size:1rem;color:var(--accent);">₹2,400/mo</div></div>
+      <div style="background:var(--surface2);border-radius:var(--rs);padding:0.9rem;"><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;margin-bottom:0.35rem;">EPF rate</div><div style="font-family:var(--mono);font-size:1rem;color:var(--accent3);">8.25% p.a.</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <span style="font-size:0.78rem;color:var(--text2);">Months at job:</span>
+      <input type="number" id="epf-months" class="form-input" style="width:80px;" value="${months}" min="0"/>
+      <button class="btn-primary" onclick="updateEPF()">Update</button>
+      <span style="font-size:0.78rem;color:var(--text3);">Total EPF: <strong style="color:var(--accent);font-family:var(--mono);">${fmt(epfTotal)}</strong></span>
+    </div>
+  `;
+
+  renderProjection();
+}
+
+function updateEPF(){S.epfMonths=+document.getElementById('epf-months').value;save();renderInvestments();}
+function delInvestment(id){S.investments=S.investments.filter(i=>i.id!==id);save();renderInvestments();}
+
+function openAddInvestment(){
+  openModal('Add investment',`
+    <div class="form-group"><div class="form-label">Name</div><input type="text" class="form-input" id="i-name" placeholder="e.g. Nifty Next 50 Fund"/></div>
+    <div class="form-group"><div class="form-label">Type</div><select class="form-select" id="i-type"><option value="mf">Mutual Fund</option><option value="stock">Stock</option><option value="fd">FD</option></select></div>
+    <div class="form-group"><div class="form-label">Monthly SIP (₹)</div><input type="number" class="form-input" id="i-monthly" placeholder="3000"/></div>
+    <div class="form-group"><div class="form-label">Expected returns (% p.a.)</div><input type="number" class="form-input" id="i-returns" placeholder="11"/></div>
+  `,()=>{
+    const name=document.getElementById('i-name').value.trim();
+    const monthly=+document.getElementById('i-monthly').value;
+    if(!name||!monthly) return;
+    S.investments.push({id:uid(),name,type:document.getElementById('i-type').value,monthly,returns:+document.getElementById('i-returns').value||11});
+    save(); renderInvestments();
+  });
+}
+
+function renderProjection() {
+  const container=document.getElementById('invest-projection');
+  const w=container.offsetWidth||600,h=180;
+  const monthly=S.investments.reduce((s,i)=>s+i.monthly,0);
+  const years=10, pts=[];
+  for(let m=0;m<=years*12;m++) pts.push(monthly*((Math.pow(1+0.11/12,m)-1)/(0.11/12)));
+  const max=pts[pts.length-1]||1;
+  const toX=i=>(i/(years*12))*(w-60)+30;
+  const toY=v=>h-20-(v/max)*(h-40);
+  const path=pts.map((v,i)=>`${i===0?'M':'L'}${toX(i)},${toY(v)}`).join(' ');
+  const area=path+` L${toX(years*12)},${h-20} L${toX(0)},${h-20} Z`;
+  const labels=[0,2,4,6,8,10].map(y=>`
+    <text x="${toX(y*12)}" y="${h-4}" text-anchor="middle" fill="var(--text3)" font-size="9" font-family="JetBrains Mono">Yr ${y}</text>
+    <text x="${toX(y*12)}" y="${toY(pts[y*12])-5}" text-anchor="middle" fill="var(--text3)" font-size="8" font-family="JetBrains Mono">${fmt(pts[y*12])}</text>`).join('');
+  container.innerHTML=`<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}">
+    <defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00e5a0" stop-opacity="0.25"/><stop offset="100%" stop-color="#00e5a0" stop-opacity="0.02"/></linearGradient></defs>
+    <path d="${area}" fill="url(#pg)"/>
+    <path d="${path}" fill="none" stroke="#00e5a0" stroke-width="2.5" stroke-linecap="round"/>
+    ${labels}
+  </svg>`;
+}
+
+// ═══════════════════════════════════════
+// MODAL ENGINE
+// ═══════════════════════════════════════
+let _modalCb=null;
+function openModal(title, body, onSave) {
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalBody').innerHTML=body;
+  _modalCb=onSave;
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(()=>{ const f=document.querySelector('#modalBody input,#modalBody textarea'); if(f) f.focus(); },100);
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');_modalCb=null;}
+function modalSave(){if(_modalCb)_modalCb();closeModal();}
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('modalOverlay'))closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+function showToast(msg) {
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:1.5rem;right:1.5rem;background:var(--accent);color:#000;padding:0.6rem 1.2rem;border-radius:var(--rs);font-weight:600;font-size:0.82rem;z-index:999;transition:opacity 0.3s;';document.body.appendChild(t);}
+  t.textContent=msg; t.style.opacity='1';
+  setTimeout(()=>{t.style.opacity='0';},2000);
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+function init() {
+  populateSelects();
+  document.getElementById('phaseIntern').classList.toggle('active',S.phase==='intern');
+  document.getElementById('phaseJob').classList.toggle('active',S.phase==='job');
+  renderDashboard();
+  window.addEventListener('resize',()=>{ const p=currentPage(); if(p==='investments')renderProjection(); if(p==='habits')renderHabits(); });
+}
+init();
+</script>
 </body>
 </html>
